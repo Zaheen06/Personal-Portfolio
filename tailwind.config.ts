@@ -41,6 +41,9 @@ const config: Config = {
                 'pulse-glow': 'pulse-glow 3s ease-in-out infinite',
                 'float': 'float 6s ease-in-out infinite',
                 'breath': 'breath 4s ease-in-out infinite',
+                'gradient': 'gradient 8s linear infinite',
+                'shine': 'shine 2s linear infinite',
+                'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
             },
             keyframes: {
                 'pulse-glow': {
@@ -54,6 +57,15 @@ const config: Config = {
                 breath: {
                     '0%, 100%': { transform: 'scale(1)' },
                     '50%': { transform: 'scale(1.02)' },
+                },
+                gradient: {
+                    '0%': { backgroundPosition: '0% 50%' },
+                    '50%': { backgroundPosition: '100% 50%' },
+                    '100%': { backgroundPosition: '0% 50%' },
+                },
+                shine: {
+                    'from': { transform: 'translateX(-100%)' },
+                    'to': { transform: 'translateX(100%)' },
                 },
             },
             backdropBlur: {

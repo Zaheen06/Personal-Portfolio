@@ -16,11 +16,10 @@ export default function SkillsOrbit() {
             icon: Palette,
             gradient: 'from-blue-500 to-cyan-500',
             skills: [
-                { name: 'React', level: 'Advanced', experience: '3+ years', progress: 90 },
-                { name: 'Next.js', level: 'Advanced', experience: '2+ years', progress: 90 },
-                { name: 'TypeScript', level: 'Intermediate', experience: '2+ years', progress: 70 },
-                { name: 'Tailwind CSS', level: 'Advanced', experience: '2+ years', progress: 90 },
-                { name: 'Framer Motion', level: 'Intermediate', experience: '1+ year', progress: 70 },
+                { name: 'React', level: 'Advanced', progress: 90 },
+                { name: 'Next.js', level: 'Advanced', progress: 90 },
+                { name: 'TypeScript', level: 'Intermediate', progress: 70 },
+                { name: 'Tailwind CSS', level: 'Advanced', progress: 90 },
             ]
         },
         {
@@ -28,10 +27,9 @@ export default function SkillsOrbit() {
             icon: Server,
             gradient: 'from-green-500 to-emerald-500',
             skills: [
-                { name: 'Node.js', level: 'Intermediate', experience: '2+ years', progress: 70 },
-                { name: 'Express.js', level: 'Intermediate', experience: '2+ years', progress: 70 },
-                { name: 'RESTful APIs', level: 'Advanced', experience: '2+ years', progress: 90 },
-                { name: 'GraphQL', level: 'Learning', experience: '6+ months', progress: 50 },
+                { name: 'Node.js', level: 'Intermediate', progress: 70 },
+                { name: 'Express.js', level: 'Intermediate', progress: 70 },
+                { name: 'RESTful APIs', level: 'Advanced', progress: 90 },
             ]
         },
         {
@@ -39,10 +37,9 @@ export default function SkillsOrbit() {
             icon: Database,
             gradient: 'from-purple-500 to-pink-500',
             skills: [
-                { name: 'PostgreSQL', level: 'Intermediate', experience: '1+ year', progress: 70 },
-                { name: 'MongoDB', level: 'Intermediate', experience: '1+ year', progress: 70 },
-                { name: 'Redis', level: 'Learning', experience: '6+ months', progress: 50 },
-                { name: 'Prisma ORM', level: 'Intermediate', experience: '1+ year', progress: 70 },
+                { name: 'PostgreSQL', level: 'Intermediate', progress: 70 },
+                { name: 'MongoDB', level: 'Intermediate', progress: 70 },
+                { name: 'Prisma ORM', level: 'Intermediate', progress: 70 },
             ]
         },
         {
@@ -50,10 +47,9 @@ export default function SkillsOrbit() {
             icon: Wrench,
             gradient: 'from-orange-500 to-red-500',
             skills: [
-                { name: 'Docker', level: 'Learning', experience: '6+ months', progress: 50 },
-                { name: 'Git & GitHub', level: 'Advanced', experience: '3+ years', progress: 90 },
-                { name: 'CI/CD', level: 'Intermediate', experience: '1+ year', progress: 70 },
-                { name: 'Vercel/Netlify', level: 'Advanced', experience: '2+ years', progress: 90 },
+                { name: 'Docker', level: 'Learning', progress: 50 },
+                { name: 'Git & GitHub', level: 'Advanced', progress: 90 },
+                { name: 'Vercel/Netlify', level: 'Advanced', progress: 90 },
             ]
         },
         {
@@ -61,21 +57,10 @@ export default function SkillsOrbit() {
             icon: Code2,
             gradient: 'from-yellow-500 to-amber-500',
             skills: [
-                { name: 'JavaScript', level: 'Advanced', experience: '3+ years', progress: 90 },
-                { name: 'TypeScript', level: 'Intermediate', experience: '2+ years', progress: 70 },
-                { name: 'Python', level: 'Intermediate', experience: '1+ year', progress: 70 },
-                { name: 'SQL', level: 'Intermediate', experience: '1+ year', progress: 70 },
-            ]
-        },
-        {
-            name: 'Specializations',
-            icon: Sparkles,
-            gradient: 'from-indigo-500 to-violet-500',
-            skills: [
-                { name: 'Generative AI', level: 'Exploring', experience: 'Current', progress: 30 },
-                { name: 'System Design', level: 'Intermediate', experience: '1+ year', progress: 70 },
-                { name: 'WebSockets', level: 'Learning', experience: '6+ months', progress: 50 },
-                { name: 'Performance Optimization', level: 'Intermediate', experience: '1+ year', progress: 70 },
+                { name: 'JavaScript', level: 'Advanced', progress: 90 },
+                { name: 'TypeScript', level: 'Intermediate', progress: 70 },
+                { name: 'Python', level: 'Intermediate', progress: 70 },
+                { name: 'SQL', level: 'Intermediate', progress: 70 },
             ]
         },
     ];
@@ -135,16 +120,25 @@ export default function SkillsOrbit() {
             className="relative min-h-screen py-20 overflow-hidden"
             id="skills"
         >
-            <div className="max-w-7xl mx-auto px-6">
+            <div className="max-w-7xl mx-auto px-6 relative z-10">
+                {/* Orbiting Background Elements */}
+                <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-white/5 rounded-full animate-[spin_60s_linear_infinite]" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] border border-white/5 rounded-full animate-[spin_80s_linear_infinite_reverse] opacity-50" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[1200px] border border-dashed border-white/5 rounded-full animate-[spin_100s_linear_infinite]" />
+                </div>
+
                 {/* Header */}
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={inView ? { opacity: 1, y: 0 } : {}}
                     transition={{ duration: 0.6 }}
-                    className="text-center mb-16"
+                    className="text-center mb-16 relative"
                 >
-                    <h2 className="text-4xl md:text-6xl font-display font-bold gradient-text mb-4">
-                        Skills & Expertise
+                    <h2 className="text-4xl md:text-6xl font-display font-bold mb-4">
+                        <span className="animate-gradient bg-gradient-to-r from-accent-primary via-accent-secondary to-accent-warm bg-[length:200%_auto] bg-clip-text text-transparent">
+                            Skills & Expertise
+                        </span>
                     </h2>
                     <p className="text-lg text-text-secondary max-w-2xl mx-auto">
                         My technical arsenal for building digital products
@@ -213,18 +207,13 @@ export default function SkillsOrbit() {
                                                     className={`h-full bg-gradient-to-r ${getProgressColor(skill.level)} rounded-full shadow-lg`}
                                                 />
                                             </div>
-
-                                            {/* Experience Duration */}
-                                            <div className="text-xs text-text-muted">
-                                                {skill.experience}
-                                            </div>
                                         </motion.div>
                                     ))}
                                 </div>
 
                                 {/* Hover Glow Effect */}
                                 <div
-                                    className={`absolute -inset-0.5 bg-gradient-to-r ${category.gradient} rounded-2xl opacity-0 group-hover:opacity-10 blur-xl transition-opacity duration-500 -z-10`}
+                                    className={`absolute -inset-0.5 bg-gradient-to-r ${category.gradient} rounded-2xl opacity-0 group-hover:opacity-20 blur-2xl transition-opacity duration-500 -z-10`}
                                 />
                             </motion.div>
                         );

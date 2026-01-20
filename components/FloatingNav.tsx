@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { Home, Zap, Briefcase, Mail } from 'lucide-react';
 
@@ -13,9 +13,14 @@ const navItems = [
 
 export default function FloatingNav() {
     const [activeSection, setActiveSection] = useState('home');
-    const { scrollY } = useScroll();
-    const opacity = useTransform(scrollY, [0, 100], [0, 1]);
-    const y = useTransform(scrollY, [0, 100], [100, 0]);
+    const { scrollYProgress } = useScroll();
+
+    // Smooth progress bar
+    const scaleX = useSpring(scrollYProgress, {
+        stiffness: 100,
+        damping: 30,
+        restDelta: 0.001
+    });
 
     useEffect(() => {
         const handleScroll = () => {
@@ -24,7 +29,9 @@ export default function FloatingNav() {
                 const element = document.getElementById(section);
                 if (element) {
                     const rect = element.getBoundingClientRect();
-                    return rect.top <= 100 && rect.bottom >= 100;
+                    // Ideally we want to highlight the section that takes up most of the viewport
+                    // or the one currently at the top
+                    return rect.top <= 200 && rect.bottom >= 200;
                 }
                 return false;
             });
@@ -50,44 +57,53 @@ export default function FloatingNav() {
             initial={{ y: -100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="fixed top-8 left-1/2 -translate-x-1/2 z-50 hidden md:block" // Increased z-index
+            className="fixed top-6 left-1/2 -translate-x-1/2 z-50 hidden md:block"
         >
-            <motion.div
-                className="backdrop-blur-md rounded-full px-6 py-3 flex gap-2 border border-white/10 transition-all duration-300"
-                style={{
-                    backgroundColor: useTransform(scrollY, [0, 50], ["rgba(15, 23, 42, 0.6)", "rgba(15, 23, 42, 0.3)"]), // Fade out background slightly on scroll
-                    borderColor: useTransform(scrollY, [0, 50], ["rgba(255, 255, 255, 0.1)", "rgba(255, 255, 255, 0.05)"]),
-                    backdropFilter: "blur(12px)" // Constant blur
-                }}
-            >
-                {navItems.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = activeSection === item.href.slice(1);
+            <div className="relative">
+                <motion.div
+                    className="backdrop-blur-xl bg-bg-primary/60 rounded-full px-2 py-2 flex gap-1 border border-white/10 shadow-2xl relative z-10"
+                >
+                    {navItems.map((item) => {
+                        const Icon = item.icon;
+                        const isActive = activeSection === item.href.slice(1);
 
-                    return (
-                        <motion.button
-                            key={item.name}
-                            onClick={() => scrollToSection(item.href)}
-                            className={`relative px-4 py-2 rounded-full flex items-center gap-2 transition-all duration-300 ${isActive ? 'text-text-primary' : 'text-text-secondary hover:text-text-primary'
-                                }`}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                        >
-                            {isActive && (
-                                <motion.div
-                                    layoutId="activeSection"
-                                    className="absolute inset-0 bg-white/10 rounded-full shadow-[0_0_20px_rgba(59,130,246,0.5)] border border-white/5"
-                                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                                >
-                                    <div className="absolute bottom-1 left-3 right-3 h-[2px] bg-accent-primary rounded-full shadow-[0_0_10px_rgba(59,130,246,0.8)]" />
-                                </motion.div>
-                            )}
-                            <Icon className="w-4 h-4 relative z-10" />
-                            <span className="text-sm font-medium relative z-10">{item.name}</span>
-                        </motion.button>
-                    );
-                })}
-            </motion.div>
+                        return (
+                            <button
+                                key={item.name}
+                                onClick={() => scrollToSection(item.href)}
+                                className={`relative px-5 py-2.5 rounded-full flex items-center gap-2 transition-all duration-300 group outline-none focus-visible:ring-2 focus-visible:ring-accent-primary/50`}
+                            >
+                                {isActive && (
+                                    <motion.div
+                                        layoutId="activeSection"
+                                        className="absolute inset-0 bg-gradient-to-r from-accent-primary/10 to-accent-secondary/10 rounded-full border border-white/10 shadow-[inset_0_0_8px_rgba(255,255,255,0.05)]"
+                                        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                                    >
+                                        {/* Glow effect for active tab */}
+                                        <div className="absolute inset-0 rounded-full bg-accent-primary/5 blur-md" />
+                                    </motion.div>
+                                )}
+
+                                <span className={`relative z-10 transition-colors duration-300 ${isActive ? 'text-white' : 'text-text-secondary group-hover:text-white'}`}>
+                                    <Icon className={`w-4 h-4 transition-transform duration-300 ${isActive ? 'scale-110' : ''}`} />
+                                </span>
+
+                                <span className={`text-sm font-medium relative z-10 transition-colors duration-300 ${isActive ? 'text-white' : 'text-text-secondary group-hover:text-white'}`}>
+                                    {item.name}
+                                </span>
+                            </button>
+                        );
+                    })}
+                </motion.div>
+
+                {/* Progress Bar Container - Attached to bottom of nav */}
+                <div className="absolute -bottom-1 left-4 right-4 h-[2px] rounded-full overflow-hidden bg-white/5 backdrop-blur-sm -z-10 opacity-0 md:opacity-100 transition-opacity">
+                    <motion.div
+                        className="h-full bg-gradient-to-r from-accent-primary via-accent-secondary to-accent-primary"
+                        style={{ scaleX, transformOrigin: "0%" }}
+                    />
+                </div>
+            </div>
         </motion.nav>
     );
 }

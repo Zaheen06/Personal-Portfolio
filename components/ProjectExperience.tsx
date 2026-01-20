@@ -1,21 +1,196 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { projects } from '@/data/portfolio';
 import Image from 'next/image';
-import { ExternalLink, Github, X, ArrowRight, TrendingUp, Zap, MapPin, FileText, Layout } from 'lucide-react';
+import { ArrowRight, TrendingUp, Zap, MapPin, FileText, Layout, ArrowUpRight } from 'lucide-react';
 import { fadeIn, fadeInUp, staggerContainer } from '@/lib/animations';
 
+interface ProjectCardProps {
+    project: typeof projects[0];
+    index: number;
+}
+
+const ProjectCard = ({ project, index }: ProjectCardProps) => {
+    const x = useMotionValue(0);
+    const y = useMotionValue(0);
+
+    const mouseX = useSpring(x, { stiffness: 500, damping: 100 });
+    const mouseY = useSpring(y, { stiffness: 500, damping: 100 });
+
+    function handleMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
+        const { left, top, width, height } = currentTarget.getBoundingClientRect();
+        const xPct = (clientX - left) / width - 0.5;
+        const yPct = (clientY - top) / height - 0.5;
+        x.set(xPct);
+        y.set(yPct);
+    }
+
+    function handleMouseLeave() {
+        x.set(0);
+        y.set(0);
+    }
+
+    const rotateX = useTransform(mouseY, [-0.5, 0.5], [5, -5]);
+    const rotateY = useTransform(mouseX, [-0.5, 0.5], [-5, 5]);
+    const brightness = useTransform(mouseY, [-0.5, 0.5], [1.1, 0.9]);
+
+    return (
+        <motion.div
+            variants={fadeInUp}
+            className="group relative flex flex-col h-full perspective-1000"
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+        >
+            <motion.div
+                style={{
+                    rotateX,
+                    rotateY,
+                    filter: useTransform(brightness, (b) => `brightness(${b})`),
+                    transformStyle: "preserve-3d",
+                }}
+                className="relative glass-dark rounded-2xl overflow-hidden border border-white/5 group-hover:border-white/10 transition-colors duration-500 h-full flex flex-col shadow-xl"
+            >
+                {/* Shine Effect */}
+                <motion.div
+                    className="absolute inset-0 z-20 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-500"
+                    style={{
+                        background: useTransform(
+                            mouseX,
+                            [-0.5, 0.5],
+                            [
+                                "linear-gradient(to right, transparent 0%, rgba(255,255,255,0) 100%)",
+                                "linear-gradient(to right, transparent 0%, rgba(255,255,255,0.1) 100%)"
+                            ] // Simplified shine for performance, or use a radial gradient tracking mouse
+                        ),
+                        backgroundImage: useTransform(
+                            [mouseX, mouseY],
+                            ([xVal, yVal]: number[]) => `radial-gradient(circle at ${50 + xVal * 100}% ${50 + yVal * 100}%, rgba(255,255,255,0.1), transparent 50%)`
+                        )
+                    }}
+                />
+
+                {/* Project Showcase Area */}
+                <div className="relative h-64 w-full overflow-hidden bg-bg-secondary transform-style-3d">
+                    {/* Background Gradient */}
+                    <div
+                        className="absolute inset-0 opacity-20 transition-opacity duration-500 group-hover:opacity-30"
+                        style={{ background: `linear-gradient(45deg, ${project.color}, transparent)` }}
+                    />
+
+                    {/* Browser Mockup */}
+                    <div className="absolute top-6 left-6 right-6 bottom-0 bg-bg-primary rounded-t-xl shadow-2xl border border-white/5 overflow-hidden transform transition-transform duration-500 group-hover:translate-y-2 group-hover:scale-[1.02]">
+                        {/* Browser Header */}
+                        <div className="h-6 bg-white/5 border-b border-white/5 flex items-center px-3 gap-1.5">
+                            <div className="w-2 h-2 rounded-full bg-red-400/80" />
+                            <div className="w-2 h-2 rounded-full bg-yellow-400/80" />
+                            <div className="w-2 h-2 rounded-full bg-green-400/80" />
+                        </div>
+
+                        {/* Project Image */}
+                        <div className="relative h-full w-full">
+                            {project.imageUrl ? (
+                                <Image
+                                    src={project.imageUrl}
+                                    alt={project.title}
+                                    fill
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                    className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                                />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center text-white/5">
+                                    <Layout className="w-16 h-16" />
+                                </div>
+                            )}
+
+                            {/* Hover Overlay with Button */}
+                            <div className="absolute inset-0 bg-bg-primary/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">
+                                <a
+                                    href={project.demoUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="px-6 py-3 rounded-full bg-white text-bg-primary font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 flex items-center gap-2 hover:bg-gray-100"
+                                >
+                                    View Project <ArrowUpRight className="w-4 h-4" />
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Category Categories Badge */}
+                    <div className="absolute top-4 right-4 z-10 transform translate-z-10">
+                        <span className="px-3 py-1 text-xs font-bold uppercase tracking-wider bg-black/40 backdrop-blur-md rounded-full border border-white/10 text-white shadow-lg flex items-center gap-1">
+                            {project.title.includes('Expense') ? 'FinTech' :
+                                project.title.includes('Quiz') ? 'EduTech' :
+                                    project.title.includes('Roadside') ? 'Realtime' :
+                                        project.title.includes('Resume') ? 'Productivity' :
+                                            'Client Work'}
+                        </span>
+                    </div>
+                </div>
+
+                {/* Content Body */}
+                <div className="p-6 flex-1 flex flex-col transform-style-3d">
+                    <div className="flex justify-between items-start mb-3">
+                        <h3 className="text-2xl font-display font-bold text-text-primary group-hover:gradient-text transition-all duration-300">
+                            {project.title}
+                        </h3>
+                    </div>
+
+                    <p className="text-text-secondary mb-6 line-clamp-3 text-sm leading-relaxed">
+                        {project.description}
+                    </p>
+
+                    <div className="mt-auto space-y-4">
+                        {/* Tech Stack */}
+                        <div className="flex flex-wrap gap-2">
+                            {project.technologies.slice(0, 4).map((tech) => (
+                                <span
+                                    key={tech}
+                                    className="text-xs px-2.5 py-1 rounded-md bg-white/5 border border-white/5 text-text-muted transition-colors duration-300 group-hover:border-white/10 group-hover:text-text-secondary"
+                                >
+                                    {tech}
+                                </span>
+                            ))}
+                        </div>
+
+                        {/* Divider */}
+                        <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+
+                        {/* Impact / Stats */}
+                        <div className="flex items-center gap-2 text-xs font-medium text-accent-primary/80">
+                            {project.impact.toLowerCase().includes('insight') || project.impact.toLowerCase().includes('trend') ? (
+                                <TrendingUp className="w-3.5 h-3.5" />
+                            ) : project.impact.toLowerCase().includes('instant') || project.impact.toLowerCase().includes('automated') ? (
+                                <Zap className="w-3.5 h-3.5" />
+                            ) : project.impact.toLowerCase().includes('location') ? (
+                                <MapPin className="w-3.5 h-3.5" />
+                            ) : project.impact.toLowerCase().includes('resume') || project.impact.toLowerCase().includes('ats') ? (
+                                <FileText className="w-3.5 h-3.5" />
+                            ) : (
+                                <Layout className="w-3.5 h-3.5" />
+                            )}
+                            <span className="truncate">{project.impact}</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Bottom Glow Line */}
+                <div
+                    className="absolute bottom-0 left-0 right-0 h-1 transition-all duration-300 transform scale-x-0 group-hover:scale-x-100"
+                    style={{ background: `linear-gradient(90deg, transparent, ${project.color}, transparent)` }}
+                />
+            </motion.div>
+        </motion.div>
+    );
+};
+
 export default function ProjectExperience() {
-    const [selectedProject, setSelectedProject] = useState<number | null>(null);
     const { ref, inView } = useInView({
         triggerOnce: true,
         threshold: 0.1,
     });
-
-    const selectedProjectData = selectedProject !== null ? projects[selectedProject] : null;
 
     return (
         <section
@@ -40,287 +215,25 @@ export default function ProjectExperience() {
                 </motion.div>
 
                 {/* Projects Grid */}
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {projects.map((project, idx) => (
-                        <motion.div
-                            key={project.id}
-                            variants={fadeInUp}
-                            className="group relative cursor-pointer"
-                            onClick={() => setSelectedProject(idx)}
-                            whileHover={{ y: -10 }}
-                        >
-                            <div
-                                className="glass-dark p-6 rounded-2xl h-full transition-all duration-500 group-hover:shadow-2xl"
-                                style={{
-                                    boxShadow: `0 10px 40px ${project.color}20`,
-                                }}
-                            >
-                                {/* Project preview with CSS Browser Mockup */}
-                                <div
-                                    className="w-full h-64 rounded-xl mb-6 overflow-hidden relative group-hover:scale-[1.02] transition-transform duration-500 bg-bg-secondary"
-                                >
-                                    {/* Abstract Gradient Background */}
-                                    <div
-                                        className="absolute inset-0 w-[200%] h-[200%] animate-gradient-move opacity-50"
-                                        style={{
-                                            background: `linear-gradient(45deg, ${project.color}10, ${project.color}30, ${project.color}10)`,
-                                            backgroundSize: '200% 200%',
-                                        }}
-                                    />
-
-                                    {/* CSS Browser Window Mockup */}
-                                    <div className="absolute inset-3 bg-bg-primary rounded-lg shadow-2xl overflow-hidden border border-white/5 flex flex-col">
-                                        {/* Browser Toolbar */}
-                                        <div className="h-6 bg-white/5 border-b border-white/5 flex items-center px-3 gap-1.5">
-                                            <div className="w-2 h-2 rounded-full bg-red-400/80"></div>
-                                            <div className="w-2 h-2 rounded-full bg-yellow-400/80"></div>
-                                            <div className="w-2 h-2 rounded-full bg-green-400/80"></div>
-                                            {/* Fake URL Bar */}
-                                            <div className="ml-2 flex-1 h-3 bg-white/5 rounded-full" />
-                                        </div>
-                                        {/* Browser Content */}
-                                        <div className="flex-1 relative overflow-hidden bg-bg-primary group-hover:bg-bg-secondary transition-colors duration-500">
-                                            <div className="p-3 space-y-2">
-                                                {/* Header */}
-                                                <div className="flex gap-2">
-                                                    <div className="w-8 h-8 rounded-lg bg-white/10 shrink-0" />
-                                                    <div className="space-y-1 flex-1">
-                                                        <div className="h-2 w-20 bg-white/10 rounded" />
-                                                        <div className="h-2 w-12 bg-white/5 rounded" />
-                                                    </div>
-                                                </div>
-                                                {/* Body Graph / Content - Only show if no image */}
-                                                <div className="h-20 bg-white/5 rounded-lg w-full relative overflow-hidden flex items-end justify-between px-2 pb-2 gap-1">
-                                                    <div className="w-2 bg-accent-primary/40 h-[40%] rounded-t-sm" style={{ backgroundColor: project.color, opacity: 0.4 }} />
-                                                    <div className="w-2 bg-accent-primary/60 h-[70%] rounded-t-sm" style={{ backgroundColor: project.color, opacity: 0.6 }} />
-                                                    <div className="w-2 bg-accent-primary/80 h-[50%] rounded-t-sm" style={{ backgroundColor: project.color, opacity: 0.8 }} />
-                                                    <div className="w-2 bg-accent-primary h-[90%] rounded-t-sm" style={{ backgroundColor: project.color }} />
-                                                </div>
-                                            </div>
-
-                                            {/* Real Project Image Overlay */}
-                                            {project.imageUrl && (
-                                                <div className="absolute inset-0 z-10 bg-bg-primary">
-                                                    <Image
-                                                        src={project.imageUrl}
-                                                        alt={project.title}
-                                                        fill
-                                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                                        className="object-cover object-top hover:object-[center_top] transition-all duration-1000"
-                                                    />
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    {/* Noise Overlay */}
-                                    <div className="absolute inset-0 bg-noise opacity-30 mix-blend-overlay pointer-events-none" />
-
-                                    {/* Unique Identity Badge */}
-                                    <div className="absolute bottom-6 right-6 font-display font-bold text-6xl opacity-10 pointer-events-none" style={{ color: project.color }}>
-                                        {project.title.charAt(0)}
-                                    </div>
-
-                                    {/* Category Label (Top Right) */}
-                                    <div className="absolute top-4 right-4 translate-y-[-10px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                                        <span className="px-3 py-1 text-xs font-bold uppercase tracking-wider bg-white/10 backdrop-blur-md rounded-full border border-white/10 text-white shadow-lg">
-                                            {project.title.includes('Expense') ? 'FinTech' :
-                                                project.title.includes('Quiz') ? 'EduTech' :
-                                                    project.title.includes('Roadside') ? 'Realtime' :
-                                                        project.title.includes('Resume') ? 'Productivity' :
-                                                            'Client Work'}
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <h3 className="text-2xl font-display font-bold mb-3 text-text-primary group-hover:gradient-text transition-all duration-300">
-                                    {project.title}
-                                </h3>
-
-                                <p className="text-text-secondary mb-4 line-clamp-2">
-                                    {project.description}
-                                </p>
-
-                                {/* Tech stack with Glow on Hover */}
-                                <div className="flex flex-wrap gap-2 mb-4">
-                                    {project.technologies.slice(0, 3).map((tech) => (
-                                        <span
-                                            key={tech}
-                                            className="text-xs px-3 py-1 rounded-full glass text-text-secondary group-hover:text-white group-hover:border-accent-primary/30 transition-colors duration-300"
-                                        >
-                                            {tech}
-                                        </span>
-                                    ))}
-                                    {project.technologies.length > 3 && (
-                                        <span className="text-xs px-3 py-1 rounded-full glass text-text-secondary">
-                                            +{project.technologies.length - 3}
-                                        </span>
-                                    )}
-                                </div>
-
-                                {/* Impact Line with Icon */}
-                                <div className="mt-auto pt-4 border-t border-white/5 mb-4">
-                                    <p className="text-sm font-medium text-accent-primary/90 flex items-center gap-2">
-                                        {project.impact.toLowerCase().includes('insight') || project.impact.toLowerCase().includes('trend') ? (
-                                            <TrendingUp className="w-4 h-4" />
-                                        ) : project.impact.toLowerCase().includes('instant') || project.impact.toLowerCase().includes('automated') ? (
-                                            <Zap className="w-4 h-4" />
-                                        ) : project.impact.toLowerCase().includes('location') ? (
-                                            <MapPin className="w-4 h-4" />
-                                        ) : project.impact.toLowerCase().includes('resume') || project.impact.toLowerCase().includes('ats') ? (
-                                            <FileText className="w-4 h-4" />
-                                        ) : (
-                                            <Layout className="w-4 h-4" />
-                                        )}
-                                        {project.impact.split(' ').slice(0, 6).join(' ')}...
-                                    </p>
-                                </div>
-
-                                <div className="flex items-center gap-3 mt-4">
-                                    <a
-                                        href={project.demoUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        onClick={(e) => e.stopPropagation()}
-                                        className="flex-1 text-center py-2 rounded-lg bg-accent-primary/10 text-accent-primary font-medium text-sm hover:bg-accent-primary hover:text-white transition-all duration-300 flex items-center justify-center gap-2"
-                                    >
-                                        <ExternalLink className="w-4 h-4" /> Live Demo
-                                    </a>
-                                    <a
-                                        href={project.githubUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        onClick={(e) => e.stopPropagation()}
-                                        className="p-2 rounded-lg bg-white/5 text-text-secondary hover:text-white hover:bg-white/10 transition-all duration-300"
-                                        title="View Source Code"
-                                    >
-                                        <Github className="w-5 h-5" />
-                                    </a>
-                                </div>
-
-                                {/* Hover glow effect */}
-                                <div
-                                    className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                                    style={{
-                                        background: `radial-gradient(circle at 50% 50%, ${project.color}15, transparent 70%)`,
-                                    }}
-                                />
-                            </div>
-                        </motion.div>
+                        <ProjectCard key={project.id} project={project} index={idx} />
                     ))}
                 </div>
-            </motion.div>
 
-            {/* Project Detail Modal */}
-            <AnimatePresence>
-                {selectedProjectData && (
-                    <motion.div
-                        className="fixed inset-0 z-50 flex items-center justify-center p-6"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        onClick={() => setSelectedProject(null)}
+                {/* View All Projects Link */}
+                <motion.div variants={fadeInUp} className="mt-16 text-center">
+                    <a
+                        href="https://github.com/Zaheen06"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-text-secondary hover:text-white transition-colors border-b border-transparent hover:border-white/20 pb-1"
                     >
-                        {/* Backdrop */}
-                        <motion.div
-                            className="absolute inset-0"
-                            style={{
-                                background: `linear-gradient(135deg, ${selectedProjectData.color}20, ${selectedProjectData.color}05)`,
-                                backdropFilter: 'blur(10px)',
-                            }}
-                        />
-
-                        {/* Modal Content */}
-                        <motion.div
-                            className="relative glass-dark rounded-3xl p-8 md:p-12 max-w-4xl w-full max-h-[90vh] overflow-y-auto"
-                            initial={{ scale: 0.8, y: 50 }}
-                            animate={{ scale: 1, y: 0 }}
-                            exit={{ scale: 0.8, y: 50 }}
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            {/* Close button */}
-                            <button
-                                onClick={() => setSelectedProject(null)}
-                                className="absolute top-6 right-6 w-10 h-10 flex items-center justify-center glass rounded-full hover:bg-white/20 transition-all"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-
-                            {/* Project content */}
-                            <h2 className="text-3xl md:text-5xl font-display font-bold mb-4 gradient-text">
-                                {selectedProjectData.title}
-                            </h2>
-
-                            <p className="text-lg text-text-secondary mb-8">
-                                {selectedProjectData.description}
-                            </p>
-
-                            {/* Problem → Solution → Impact */}
-                            <div className="space-y-6 mb-8">
-                                <div>
-                                    <h3 className="text-xl font-semibold mb-2 text-accent-warm">Problem</h3>
-                                    <p className="text-text-secondary">{selectedProjectData.problem}</p>
-                                </div>
-
-                                <div>
-                                    <h3 className="text-xl font-semibold mb-2 text-accent-neon">Solution</h3>
-                                    <p className="text-text-secondary">{selectedProjectData.solution}</p>
-                                </div>
-
-                                <div>
-                                    <h3 className="text-xl font-semibold mb-2 text-accent-glow">Impact</h3>
-                                    <p className="text-text-secondary">{selectedProjectData.impact}</p>
-                                </div>
-                            </div>
-
-                            {/* Technologies */}
-                            <div className="mb-8">
-                                <h3 className="text-lg font-semibold mb-4">Technologies Used</h3>
-                                <div className="flex flex-wrap gap-2">
-                                    {selectedProjectData.technologies.map((tech) => (
-                                        <span
-                                            key={tech}
-                                            className="px-4 py-2 glass rounded-full text-sm text-text-primary"
-                                            style={{
-                                                borderColor: selectedProjectData.color,
-                                                borderWidth: '1px',
-                                            }}
-                                        >
-                                            {tech}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Links */}
-                            <div className="flex gap-4">
-                                {selectedProjectData.demoUrl && (
-                                    <a
-                                        href={selectedProjectData.demoUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="glass px-6 py-3 rounded-full flex items-center gap-2 hover:glow transition-all"
-                                    >
-                                        <ExternalLink className="w-4 h-4" />
-                                        <span>Live Demo</span>
-                                    </a>
-                                )}
-                                {selectedProjectData.githubUrl && (
-                                    <a
-                                        href={selectedProjectData.githubUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="glass-dark px-6 py-3 rounded-full flex items-center gap-2 hover:bg-white/10 transition-all"
-                                    >
-                                        <Github className="w-4 h-4" />
-                                        <span>View Code</span>
-                                    </a>
-                                )}
-                            </div>
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                        View more on GitHub
+                        <ArrowRight className="w-4 h-4" />
+                    </a>
+                </motion.div>
+            </motion.div>
         </section>
     );
 }

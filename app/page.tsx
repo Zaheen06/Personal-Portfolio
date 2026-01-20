@@ -8,6 +8,7 @@ import HeroIdentity from '@/components/HeroIdentity';
 import SkillsOrbit from '@/components/SkillsOrbit';
 import ProjectExperience from '@/components/ProjectExperience';
 import ChatContact from '@/components/ChatContact';
+import Footer from '@/components/Footer';
 
 export default function Home() {
     const [showEntry, setShowEntry] = useState(true);
@@ -37,17 +38,7 @@ export default function Home() {
                         <ProjectExperience />
                         <ChatContact />
 
-                        {/* Footer */}
-                        <footer className="relative py-12 px-6 text-center border-t border-white/10">
-                            <div className="max-w-7xl mx-auto">
-                                <p className="text-text-secondary mb-4">
-                                    Designed & Built by Mohammad Zaheen
-                                </p>
-                                <p className="text-sm text-text-secondary/60">
-                                    © {new Date().getFullYear()} All rights reserved
-                                </p>
-                            </div>
-                        </footer>
+                        <Footer />
                     </>
                 )}
             </main>

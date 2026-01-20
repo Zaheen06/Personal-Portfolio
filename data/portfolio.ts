@@ -87,27 +87,9 @@ export const skills = [
         level: "Learning",
         proficiency: 60,
     },
-    {
-        name: "GraphQL",
-        category: "API",
-        description: "Efficient data fetching and management",
-        color: "#E10098",
-        usage: "Implemented for optimized fetching",
-        level: "Learning",
-        proficiency: 65,
-    },
-    {
-        name: "Framer Motion",
-        category: "Animation",
-        description: "Creating fluid, performant animations",
-        color: "#FF0055",
-        usage: "Powered all portfolio animations",
-        level: "Intermediate",
-        proficiency: 85,
-    },
 ];
 
-export const currentlyExploring = ["Generative AI", "Advanced System Design", "WebSockets"];
+export const currentlyExploring = ["Generative AI", "WebSockets"];
 
 export const projects = [
     {
@@ -160,7 +142,7 @@ export const projects = [
         impact: "Increased ATS pass rate potential by 60%",
         technologies: ["React", "Node.js", "PostgreSQL", "Supabase"],
         color: "#3b82f6", // Blue
-        demoUrl: "https://resume-pilot.vercel.app",
+        demoUrl: "https://resume-pilot-six.vercel.app",
         githubUrl: "https://github.com/Zaheen06/ResumePilot",
         imageUrl: "/projects/resumepilot.png",
     },
