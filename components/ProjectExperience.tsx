@@ -105,6 +105,7 @@ export default function ProjectExperience() {
                                                         src={project.imageUrl}
                                                         alt={project.title}
                                                         fill
+                                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                                         className="object-cover object-top hover:object-[center_top] transition-all duration-1000"
                                                     />
                                                 </div>
@@ -120,11 +121,11 @@ export default function ProjectExperience() {
                                         {project.title.charAt(0)}
                                     </div>
 
-                                    {/* Outcome Label (Top Right) */}
+                                    {/* Category Label (Top Right) */}
                                     <div className="absolute top-4 right-4 translate-y-[-10px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
                                         <span className="px-3 py-1 text-xs font-bold uppercase tracking-wider bg-white/10 backdrop-blur-md rounded-full border border-white/10 text-white shadow-lg">
                                             {project.title.includes('Expense') ? 'FinTech' :
-                                                project.title.includes('Quiz') ? 'EdTech' :
+                                                project.title.includes('Quiz') ? 'EduTech' :
                                                     project.title.includes('Roadside') ? 'Realtime' :
                                                         project.title.includes('Resume') ? 'Productivity' :
                                                             'Client Work'}
@@ -175,9 +176,26 @@ export default function ProjectExperience() {
                                     </p>
                                 </div>
 
-                                <div className="flex items-center gap-2 text-sm text-text-primary group-hover:text-accent-primary transition-colors duration-300">
-                                    <span>View Details</span>
-                                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                                <div className="flex items-center gap-3 mt-4">
+                                    <a
+                                        href={project.demoUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        onClick={(e) => e.stopPropagation()}
+                                        className="flex-1 text-center py-2 rounded-lg bg-accent-primary/10 text-accent-primary font-medium text-sm hover:bg-accent-primary hover:text-white transition-all duration-300 flex items-center justify-center gap-2"
+                                    >
+                                        <ExternalLink className="w-4 h-4" /> Live Demo
+                                    </a>
+                                    <a
+                                        href={project.githubUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        onClick={(e) => e.stopPropagation()}
+                                        className="p-2 rounded-lg bg-white/5 text-text-secondary hover:text-white hover:bg-white/10 transition-all duration-300"
+                                        title="View Source Code"
+                                    >
+                                        <Github className="w-5 h-5" />
+                                    </a>
                                 </div>
 
                                 {/* Hover glow effect */}

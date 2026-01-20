@@ -159,35 +159,6 @@ export default function HeroIdentity() {
                                     <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/40 via-transparent to-transparent pointer-events-none" />
                                 </div>
                             </motion.div>
-
-                            {/* Orbiting particles with purposeful connection look */}
-                            {[...Array(3)].map((_, i) => (
-                                <motion.div
-                                    key={i}
-                                    className="absolute w-3 h-3 bg-accent-primary rounded-full shadow-[0_0_15px_rgba(59,130,246,0.5)] z-20"
-                                    style={{
-                                        top: '50%',
-                                        left: '50%',
-                                    }}
-                                    animate={{
-                                        rotate: 360,
-                                        scale: [1, 1.2, 1],
-                                        opacity: [0.7, 1, 0.7],
-                                        x: [0, 160 * Math.cos((i * 2 * Math.PI) / 3)],
-                                        y: [0, 160 * Math.sin((i * 2 * Math.PI) / 3)],
-                                    }}
-                                    transition={{
-                                        rotate: { duration: 20, repeat: Infinity, ease: "linear" },
-                                        scale: { duration: 3, repeat: Infinity },
-                                        opacity: { duration: 3, repeat: Infinity },
-                                        x: { duration: 15, repeat: Infinity, ease: "linear" }, // Orbit movement
-                                        y: { duration: 15, repeat: Infinity, ease: "linear" }
-                                    }}
-                                >
-                                    {/* Trail effect */}
-                                    <div className="absolute inset-0 bg-accent-secondary blur-sm rounded-full opacity-50" />
-                                </motion.div>
-                            ))}
                         </motion.div>
                     </motion.div>
                 </div>

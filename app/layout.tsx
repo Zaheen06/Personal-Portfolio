@@ -17,12 +17,12 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
     title: 'Mohammad Zaheen | Full Stack Developer',
-    description: 'Personal portfolio showcasing cutting-edge web development projects and skills',
-    keywords: ['web development', 'full stack', 'portfolio', 'react', 'next.js'],
+    description: 'Building fast, scalable, and AI-powered web products that solve real-world problems. View my latest work in Full Stack Development.',
+    keywords: ['web development', 'full stack', 'portfolio', 'react', 'next.js', 'AI', 'software engineer'],
     authors: [{ name: 'Mohammad Zaheen' }],
     openGraph: {
         title: 'Mohammad Zaheen | Full Stack Developer',
-        description: 'Personal portfolio showcasing cutting-edge web development projects and skills',
+        description: 'Building fast, scalable, and AI-powered web products that solve real-world problems. View my latest work in Full Stack Development.',
         type: 'website',
     },
 };

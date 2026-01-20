@@ -10,7 +10,7 @@ import { fadeIn, fadeInUp, staggerContainer } from '@/lib/animations';
 export default function ChatContact() {
     const [messages, setMessages] = useState([
         { type: 'bot', text: `Hi! I'm ${personalInfo.name}.` },
-        { type: 'bot', text: 'To get started, what should I call you?' },
+        { type: 'bot', text: 'I help businesses build high-performance web apps. Tell me about your project!' },
     ]);
     const [inputValue, setInputValue] = useState('');
     const [formData, setFormData] = useState({ name: '', email: '', message: '' });
@@ -88,7 +88,7 @@ export default function ChatContact() {
                                     <div className="font-semibold">{personalInfo.name}</div>
                                     <div className="text-sm text-text-secondary flex items-center gap-1.5">
                                         <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                                        Usually replies within 24 hours
+                                        Usually replies within 24 hours ⏱️
                                     </div>
                                 </div>
                             </div>
@@ -222,10 +222,15 @@ export default function ChatContact() {
                                         href={personalInfo.social.github}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="flex items-center gap-3 p-4 glass rounded-xl hover:bg-white/10 transition-all group"
+                                        className="flex items-center gap-4 p-4 glass rounded-xl hover:bg-white/10 transition-all group"
                                     >
-                                        <Github className="w-5 h-5 text-text-secondary group-hover:text-accent-neon transition-colors" />
-                                        <span className="group-hover:text-accent-neon transition-colors">GitHub</span>
+                                        <div className="p-2 bg-white/5 rounded-full group-hover:bg-white/10 transition-colors">
+                                            <Github className="w-5 h-5 text-text-secondary group-hover:text-accent-neon transition-colors" />
+                                        </div>
+                                        <div>
+                                            <div className="font-semibold text-text-primary group-hover:text-accent-neon transition-colors">GitHub</div>
+                                            <div className="text-xs text-text-secondary">Code & Projects</div>
+                                        </div>
                                     </a>
                                 )}
 
@@ -234,10 +239,15 @@ export default function ChatContact() {
                                         href={personalInfo.social.linkedin}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="flex items-center gap-3 p-4 glass rounded-xl hover:bg-white/10 transition-all group"
+                                        className="flex items-center gap-4 p-4 glass rounded-xl hover:bg-white/10 transition-all group"
                                     >
-                                        <Linkedin className="w-5 h-5 text-text-secondary group-hover:text-[#0077b5] transition-colors" />
-                                        <span className="group-hover:text-[#0077b5] transition-colors">LinkedIn</span>
+                                        <div className="p-2 bg-white/5 rounded-full group-hover:bg-white/10 transition-colors">
+                                            <Linkedin className="w-5 h-5 text-text-secondary group-hover:text-[#0077b5] transition-colors" />
+                                        </div>
+                                        <div>
+                                            <div className="font-semibold text-text-primary group-hover:text-[#0077b5] transition-colors">LinkedIn</div>
+                                            <div className="text-xs text-text-secondary">Professional Profile</div>
+                                        </div>
                                     </a>
                                 )}
 
@@ -246,10 +256,15 @@ export default function ChatContact() {
                                         href={personalInfo.social.twitter}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="flex items-center gap-3 p-4 glass rounded-xl hover:bg-white/10 transition-all group"
+                                        className="flex items-center gap-4 p-4 glass rounded-xl hover:bg-white/10 transition-all group"
                                     >
-                                        <Twitter className="w-5 h-5 text-text-secondary group-hover:text-[#1DA1F2] transition-colors" />
-                                        <span className="group-hover:text-[#1DA1F2] transition-colors">Twitter</span>
+                                        <div className="p-2 bg-white/5 rounded-full group-hover:bg-white/10 transition-colors">
+                                            <Twitter className="w-5 h-5 text-text-secondary group-hover:text-[#1DA1F2] transition-colors" />
+                                        </div>
+                                        <div>
+                                            <div className="font-semibold text-text-primary group-hover:text-[#1DA1F2] transition-colors">Twitter</div>
+                                            <div className="text-xs text-text-secondary">Updates & Thoughts</div>
+                                        </div>
                                     </a>
                                 )}
                             </div>
