@@ -156,24 +156,7 @@ export default function HeroIdentity() {
                             {personalInfo.bio}
                         </motion.p>
 
-                        {/* Stats Row */}
-                        <motion.div
-                            variants={fadeInUp}
-                            className="flex gap-12 mb-12 justify-center md:justify-start border-l-2 border-white/5 pl-6"
-                        >
-                            <div className="text-center md:text-left">
-                                <div className="text-3xl font-bold text-white">10<span className="text-accent-primary">+</span></div>
-                                <div className="text-xs text-text-muted uppercase tracking-wider mt-1">Projects</div>
-                            </div>
-                            <div className="text-center md:text-left">
-                                <div className="text-3xl font-bold text-white">2<span className="text-accent-secondary">+</span></div>
-                                <div className="text-xs text-text-muted uppercase tracking-wider mt-1">Years Exp</div>
-                            </div>
-                            <div className="text-center md:text-left">
-                                <div className="text-3xl font-bold text-white">5<span className="text-accent-warm">+</span></div>
-                                <div className="text-xs text-text-muted uppercase tracking-wider mt-1">Happy Clients</div>
-                            </div>
-                        </motion.div>
+
 
                         {/* CTA Buttons - Improved hierarchy */}
                         <motion.div variants={fadeInUp} className="flex flex-wrap gap-4 justify-center md:justify-start">
@@ -200,16 +183,7 @@ export default function HeroIdentity() {
                                 Get in Touch
                             </motion.a>
 
-                            <motion.a
-                                href="/resume.pdf"
-                                target="_blank"
-                                whileHover={{ y: -4, scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                className="glass-dark px-6 py-4 rounded-full text-text-secondary font-medium hover:bg-white/10 transition-all duration-300 flex items-center gap-2"
-                            >
-                                <Download className="w-4 h-4" />
-                                <span className="hidden sm:inline">Resume</span>
-                            </motion.a>
+
                         </motion.div>
                     </motion.div>
 
