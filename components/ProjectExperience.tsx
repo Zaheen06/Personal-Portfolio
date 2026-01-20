@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { projects } from '@/data/portfolio';
-import { ExternalLink, Github, X } from 'lucide-react';
+import { ExternalLink, Github, X, ArrowRight } from 'lucide-react';
 import { fadeIn, fadeInUp, staggerContainer } from '@/lib/animations';
 
 export default function ProjectExperience() {
@@ -54,15 +54,38 @@ export default function ProjectExperience() {
                                     boxShadow: `0 10px 40px ${project.color}20`,
                                 }}
                             >
-                                {/* Project preview/icon */}
+                                {/* Project preview with Abstract Identity Watermark */}
                                 <div
-                                    className="w-full h-48 rounded-xl mb-6 flex items-center justify-center text-6xl font-display font-bold overflow-hidden"
-                                    style={{
-                                        background: `linear-gradient(135deg, ${project.color}40, ${project.color}10)`,
-                                    }}
+                                    className="w-full h-48 rounded-xl mb-6 overflow-hidden relative group-hover:scale-[1.02] transition-transform duration-500"
                                 >
-                                    {project.title.charAt(0)}
-                                    {/* Placeholder - replace with actual project image */}
+                                    {/* Animated Gradient Background */}
+                                    <div
+                                        className="absolute inset-0 w-[200%] h-[200%] animate-gradient-move"
+                                        style={{
+                                            background: `linear-gradient(45deg, ${project.color}10, ${project.color}30, ${project.color}10)`,
+                                            backgroundSize: '200% 200%',
+                                        }}
+                                    />
+
+                                    {/* Abstract Identity: Giant Watermark Letter */}
+                                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
+                                        <span
+                                            className="text-[12rem] font-bold opacity-10 mix-blend-overlay filter blur-sm select-none transform group-hover:scale-110 group-hover:rotate-12 transition-transform duration-700"
+                                            style={{ color: project.color }}
+                                        >
+                                            {project.title.charAt(0)}
+                                        </span>
+                                    </div>
+
+                                    {/* Noise Overlay */}
+                                    <div className="absolute inset-0 bg-noise opacity-30 mix-blend-overlay" />
+
+                                    {/* Outcome Label (Top Right) */}
+                                    <div className="absolute top-4 right-4 translate-y-[-10px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                                        <span className="px-3 py-1 text-xs font-bold uppercase tracking-wider bg-white/10 backdrop-blur-md rounded-full border border-white/10 text-white shadow-lg">
+                                            {project.impact.includes('users') ? 'User Growth' : project.impact.includes('collaboration') ? 'Realtime' : 'Product'}
+                                        </span>
+                                    </div>
                                 </div>
 
                                 <h3 className="text-2xl font-display font-bold mb-3 text-text-primary group-hover:gradient-text transition-all duration-300">
@@ -73,12 +96,12 @@ export default function ProjectExperience() {
                                     {project.description}
                                 </p>
 
-                                {/* Tech stack */}
+                                {/* Tech stack with Glow on Hover */}
                                 <div className="flex flex-wrap gap-2 mb-4">
                                     {project.technologies.slice(0, 3).map((tech) => (
                                         <span
                                             key={tech}
-                                            className="text-xs px-3 py-1 rounded-full glass text-text-secondary"
+                                            className="text-xs px-3 py-1 rounded-full glass text-text-secondary group-hover:text-white group-hover:border-accent-primary/30 transition-colors duration-300"
                                         >
                                             {tech}
                                         </span>
@@ -90,9 +113,17 @@ export default function ProjectExperience() {
                                     )}
                                 </div>
 
-                                <div className="flex items-center gap-2 text-sm text-accent-neon">
+                                {/* Impact Line */}
+                                <div className="mt-auto pt-4 border-t border-white/5 mb-4">
+                                    <p className="text-sm font-medium text-accent-primary/90 flex items-center gap-2">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-accent-primary animate-pulse"></span>
+                                        {project.impact.split(' ').slice(0, 6).join(' ')}...
+                                    </p>
+                                </div>
+
+                                <div className="flex items-center gap-2 text-sm text-text-primary group-hover:text-accent-primary transition-colors duration-300">
                                     <span>View Details</span>
-                                    <ExternalLink className="w-4 h-4" />
+                                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
                                 </div>
 
                                 {/* Hover glow effect */}

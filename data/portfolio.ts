@@ -11,7 +11,7 @@ export const personalInfo = {
         twitter: "https://twitter.com/yourusername",
     },
     // Add your personal image path here
-    imagePath: "/images/profile.jpg",
+    imagePath: "/my_photo.jpg",
 };
 
 export const skills = [
@@ -20,60 +20,70 @@ export const skills = [
         category: "Frontend",
         description: "Building dynamic, responsive user interfaces",
         color: "#61DAFB",
+        usage: "Used in most projects for component-based architecture",
     },
     {
         name: "Next.js",
         category: "Frontend",
         description: "Server-side rendering and static site generation",
         color: "#000000",
+        usage: "Core framework for the Personal Portfolio and SaaS apps",
     },
     {
         name: "TypeScript",
         category: "Language",
         description: "Type-safe, scalable code architecture",
         color: "#3178C6",
+        usage: "Standard language for all modern web applications",
     },
     {
         name: "Node.js",
         category: "Backend",
         description: "Building scalable server applications",
         color: "#339933",
+        usage: "Backend runtime for API services and microservices",
     },
     {
         name: "MongoDB",
         category: "Database",
         description: "NoSQL database design and optimization",
         color: "#47A248",
+        usage: "Primary database for storing unstructured flexible data",
     },
     {
         name: "Tailwind CSS",
         category: "Styling",
         description: "Rapid UI development with utility-first CSS",
         color: "#06B6D4",
+        usage: "Styled the entire Portfolio and Dashboard UI",
     },
     {
         name: "Framer Motion",
         category: "Animation",
         description: "Creating fluid, performant animations",
         color: "#FF0055",
+        usage: "Powered all the animations and transitions in the portfolio",
     },
     {
         name: "PostgreSQL",
         category: "Database",
         description: "Relational database design and queries",
         color: "#4169E1",
+        usage: "Used for complex data relationships and transactions",
     },
     {
         name: "GraphQL",
         category: "API",
         description: "Efficient data fetching and management",
         color: "#E10098",
+        usage: "Optimized data fetching in high-traffic applications",
     },
     {
         name: "Docker",
         category: "DevOps",
         description: "Containerization and deployment",
         color: "#2496ED",
+        usage: "Containerized applications for consistent deployment",
     },
 ];
 

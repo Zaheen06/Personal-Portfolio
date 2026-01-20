@@ -47,14 +47,18 @@ export default function FloatingNav() {
 
     return (
         <motion.nav
-            style={{ opacity, y }}
-            className="fixed top-8 left-1/2 -translate-x-1/2 z-40 hidden md:block"
+            initial={{ y: -100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="fixed top-8 left-1/2 -translate-x-1/2 z-50 hidden md:block" // Increased z-index
         >
             <motion.div
-                className="glass-dark rounded-full px-6 py-3 flex gap-2"
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.5 }}
+                className="backdrop-blur-md rounded-full px-6 py-3 flex gap-2 border border-white/10 transition-all duration-300"
+                style={{
+                    backgroundColor: useTransform(scrollY, [0, 50], ["rgba(15, 23, 42, 0.6)", "rgba(15, 23, 42, 0.3)"]), // Fade out background slightly on scroll
+                    borderColor: useTransform(scrollY, [0, 50], ["rgba(255, 255, 255, 0.1)", "rgba(255, 255, 255, 0.05)"]),
+                    backdropFilter: "blur(12px)" // Constant blur
+                }}
             >
                 {navItems.map((item) => {
                     const Icon = item.icon;
@@ -72,9 +76,11 @@ export default function FloatingNav() {
                             {isActive && (
                                 <motion.div
                                     layoutId="activeSection"
-                                    className="absolute inset-0 bg-white/10 rounded-full"
+                                    className="absolute inset-0 bg-white/10 rounded-full shadow-[0_0_20px_rgba(59,130,246,0.5)] border border-white/5"
                                     transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                                />
+                                >
+                                    <div className="absolute bottom-1 left-3 right-3 h-[2px] bg-accent-primary rounded-full shadow-[0_0_10px_rgba(59,130,246,0.8)]" />
+                                </motion.div>
                             )}
                             <Icon className="w-4 h-4 relative z-10" />
                             <span className="text-sm font-medium relative z-10">{item.name}</span>

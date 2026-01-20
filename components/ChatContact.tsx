@@ -9,8 +9,8 @@ import { fadeIn, fadeInUp, staggerContainer } from '@/lib/animations';
 
 export default function ChatContact() {
     const [messages, setMessages] = useState([
-        { type: 'bot', text: `Hi! I'm ${personalInfo.name}. Let's connect!` },
-        { type: 'bot', text: 'What would you like to discuss?' },
+        { type: 'bot', text: `Hi! I'm ${personalInfo.name}.` },
+        { type: 'bot', text: 'To get started, what should I call you?' },
     ]);
     const [inputValue, setInputValue] = useState('');
     const [formData, setFormData] = useState({ name: '', email: '', message: '' });
@@ -21,38 +21,37 @@ export default function ChatContact() {
         threshold: 0.1,
     });
 
-    const handleSendMessage = () => {
-        if (!inputValue.trim()) return;
+    const handleSendMessage = (text = inputValue) => {
+        if (!text.trim()) return;
 
         // Add user message
-        const newMessages = [...messages, { type: 'user', text: inputValue }];
+        const newMessages = [...messages, { type: 'user', text }];
         setMessages(newMessages);
+        setInputValue(''); // Clear input immediately
 
         // Bot responses based on step
         setTimeout(() => {
             if (step === 0) {
-                setFormData({ ...formData, name: inputValue });
-                setMessages([...newMessages, { type: 'bot', text: 'Great! What&apos;s your email address?' }]);
+                setFormData({ ...formData, name: text });
+                setMessages(prev => [...prev, { type: 'bot', text: `Nice to meet you, ${text}! What's your email address?` }]);
                 setStep(1);
             } else if (step === 1) {
-                setFormData({ ...formData, email: inputValue });
-                setMessages([...newMessages, {
-                    type: 'bot', text: 'Perfect! What would you like to talk about?'
+                setFormData({ ...formData, email: text });
+                setMessages(prev => [...prev, {
+                    type: 'bot', text: 'Got it. What are you looking to collaborate on?'
                 }]);
                 setStep(2);
             } else if (step === 2) {
-                setFormData({ ...formData, message: inputValue });
-                setMessages([
-                    ...newMessages,
-                    { type: 'bot', text: `Thanks! I&apos;ll get back to you at ${formData.email} soon! 🚀` },
+                setFormData({ ...formData, message: text });
+                setMessages(prev => [
+                    ...prev,
+                    { type: 'bot', text: `Thanks! I've received your message about "${text}". I'll get back to you at ${formData.email} soon! 🚀` },
                 ]);
                 setStep(3);
                 // Here you would normally send the form data to your backend/email service
-                console.log('Form submitted:', { ...formData, message: inputValue });
+                console.log('Form submitted:', { ...formData, message: text });
             }
-        }, 800);
-
-        setInputValue('');
+        }, 1000);
     };
 
     return (
@@ -132,6 +131,25 @@ export default function ChatContact() {
                             )}
                         </div>
 
+                        {/* Quick Replies for Step 2 */}
+                        {step === 2 && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="flex gap-2 flex-wrap mb-4"
+                            >
+                                {['Freelance Project', 'Internship', 'Collaboration', 'Just saying Hi'].map((reply) => (
+                                    <button
+                                        key={reply}
+                                        onClick={() => handleSendMessage(reply)}
+                                        className="px-4 py-2 text-sm bg-accent-primary/10 border border-accent-primary/20 rounded-full text-accent-primary hover:bg-accent-primary hover:text-white transition-all hover:scale-105"
+                                    >
+                                        {reply}
+                                    </button>
+                                ))}
+                            </motion.div>
+                        )}
+
                         {/* Input */}
                         {step < 3 && (
                             <div className="flex gap-2">
@@ -139,6 +157,7 @@ export default function ChatContact() {
                                     type={step === 1 ? 'email' : 'text'}
                                     value={inputValue}
                                     onChange={(e) => setInputValue(e.target.value)}
+                                    // Fix: pass no args to use inputValue
                                     onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                                     placeholder={
                                         step === 0
@@ -150,7 +169,7 @@ export default function ChatContact() {
                                     className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-full focus:outline-none focus:border-accent-neon transition-all text-text-primary placeholder:text-text-secondary"
                                 />
                                 <button
-                                    onClick={handleSendMessage}
+                                    onClick={() => handleSendMessage()}
                                     className="w-12 h-12 flex items-center justify-center bg-gradient-to-r from-accent-neon to-accent-glow rounded-full hover:scale-105 transition-transform"
                                 >
                                     <Send className="w-5 h-5 text-bg-dark" />
@@ -172,7 +191,7 @@ export default function ChatContact() {
                     </motion.div>
 
                     {/* Contact Info & Social */}
-                    <motion.div variants={fadeInUp} className="space-y-6">
+                    <motion.div variants={fadeInUp} className="space-y-6 opacity-80 hover:opacity-100 transition-opacity duration-300">
                         {/* Direct Contact */}
                         <div className="glass-dark rounded-3xl p-6 md:p-8">
                             <h3 className="text-2xl font-display font-bold mb-6">Get in Touch</h3>
@@ -234,7 +253,7 @@ export default function ChatContact() {
                         </div>
                     </motion.div>
                 </div>
-            </motion.div>
-        </section>
+            </motion.div >
+        </section >
     );
 }

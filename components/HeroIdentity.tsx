@@ -5,6 +5,7 @@ import { useEffect, useRef } from 'react';
 import { useMousePosition } from '@/hooks/useMousePosition';
 import { personalInfo } from '@/data/portfolio';
 import { fadeIn, fadeInUp, staggerContainer } from '@/lib/animations';
+import Image from 'next/image';
 
 export default function HeroIdentity() {
     const mouse = useMousePosition();
@@ -87,24 +88,30 @@ export default function HeroIdentity() {
 
                         <motion.p
                             variants={fadeInUp}
-                            className="text-base md:text-lg text-text-secondary/80 mb-10 max-w-lg"
+                            className="text-base md:text-lg text-text-secondary/90 mb-10 max-w-md leading-[1.8] tracking-wide"
                         >
                             {personalInfo.bio}
                         </motion.p>
 
                         <motion.div variants={fadeInUp} className="flex gap-4 justify-center md:justify-start">
-                            <a
+                            <motion.a
                                 href="#contact"
-                                className="glass px-8 py-4 rounded-full text-text-primary font-medium cursor-magnetic glow hover:glow-text transition-all duration-300"
+                                whileHover={{ y: -4, scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                className="glass px-8 py-4 rounded-full text-text-primary font-medium cursor-magnetic glow hover:glow-text transition-all duration-300 relative overflow-hidden group"
                             >
-                                Get in Touch
-                            </a>
-                            <a
+                                <span className="relative z-10">Get in Touch</span>
+                                <div className="absolute inset-0 bg-accent-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                            </motion.a>
+                            <motion.a
                                 href="#projects"
-                                className="glass-dark px-8 py-4 rounded-full text-text-primary font-medium cursor-magnetic hover:bg-white/10 transition-all duration-300"
+                                whileHover={{ y: -4, scale: 1.02, x: 4 }}
+                                whileTap={{ scale: 0.98 }}
+                                className="glass-dark px-8 py-4 rounded-full text-text-primary font-medium cursor-magnetic hover:bg-white/10 transition-all duration-300 flex items-center gap-2 group"
                             >
                                 View Work
-                            </a>
+                                <span className="group-hover:translate-x-1 transition-transform duration-300">→</span>
+                            </motion.a>
                         </motion.div>
                     </motion.div>
 
@@ -127,46 +134,59 @@ export default function HeroIdentity() {
                                 transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
                             />
 
-                            {/* Glass frame */}
-                            <div className="relative w-full h-full rounded-full glass p-2 animate-breath border-2 border-accent-primary/40">
-                                <div className="w-full h-full rounded-full overflow-hidden border-2 border-accent-primary/30 shadow-2xl">
-                                    {/* Placeholder for personal image */}
-                                    <div className="w-full h-full bg-gradient-to-br from-accent-primary/30 to-accent-secondary/30 flex items-center justify-center text-7xl font-bold text-text-primary shadow-lg">
-                                        {personalInfo.name.charAt(0)}
-                                    </div>
-                                    {
-
-                                        //   <Image
-                                        //     src={personalInfo.imagePath}
-                                        //   alt={personalInfo.name}
-                                        //     fill
-                                        //     className="object-cover"
-                                        //     priority
-                                        //   />
-                                    }
+                            {/* Glass frame with Breathing Animation */}
+                            <motion.div
+                                className="relative w-full h-full rounded-full glass p-2 border-2 border-accent-primary/40"
+                                animate={{
+                                    scale: [1, 1.02, 1],
+                                    rotate: [0, 1, -1, 0]
+                                }}
+                                transition={{
+                                    duration: 5,
+                                    repeat: Infinity,
+                                    ease: "easeInOut"
+                                }}
+                            >
+                                <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-accent-primary/30 shadow-2xl">
+                                    <Image
+                                        src={personalInfo.imagePath}
+                                        alt={personalInfo.name}
+                                        fill
+                                        className="object-cover transition-transform duration-700 hover:scale-110"
+                                        priority
+                                    />
+                                    {/* Subtle gradient overlay */}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/40 via-transparent to-transparent pointer-events-none" />
                                 </div>
-                            </div>
+                            </motion.div>
 
-                            {/* Orbiting particles */}
+                            {/* Orbiting particles with purposeful connection look */}
                             {[...Array(3)].map((_, i) => (
                                 <motion.div
                                     key={i}
-                                    className="absolute w-3 h-3 bg-accent-primary rounded-full shadow-lg"
+                                    className="absolute w-3 h-3 bg-accent-primary rounded-full shadow-[0_0_15px_rgba(59,130,246,0.5)] z-20"
                                     style={{
                                         top: '50%',
                                         left: '50%',
                                     }}
                                     animate={{
                                         rotate: 360,
-                                        x: [0, 150 * Math.cos((i * 2 * Math.PI) / 3)],
-                                        y: [0, 150 * Math.sin((i * 2 * Math.PI) / 3)],
+                                        scale: [1, 1.2, 1],
+                                        opacity: [0.7, 1, 0.7],
+                                        x: [0, 160 * Math.cos((i * 2 * Math.PI) / 3)],
+                                        y: [0, 160 * Math.sin((i * 2 * Math.PI) / 3)],
                                     }}
                                     transition={{
-                                        duration: 10 + i * 2,
-                                        repeat: Infinity,
-                                        ease: 'linear',
+                                        rotate: { duration: 20, repeat: Infinity, ease: "linear" },
+                                        scale: { duration: 3, repeat: Infinity },
+                                        opacity: { duration: 3, repeat: Infinity },
+                                        x: { duration: 15, repeat: Infinity, ease: "linear" }, // Orbit movement
+                                        y: { duration: 15, repeat: Infinity, ease: "linear" }
                                     }}
-                                />
+                                >
+                                    {/* Trail effect */}
+                                    <div className="absolute inset-0 bg-accent-secondary blur-sm rounded-full opacity-50" />
+                                </motion.div>
                             ))}
                         </motion.div>
                     </motion.div>
