@@ -14,11 +14,28 @@ export default function Home() {
     const [showEntry, setShowEntry] = useState(true);
     const [showMain, setShowMain] = useState(false);
 
+    // Scroll to top on mount and handle URL hash
+    useEffect(() => {
+        // Remove hash from URL if present
+        if (window.location.hash) {
+            window.history.replaceState(null, '', window.location.pathname);
+        }
+        // Scroll to top after a short delay to ensure content is rendered
+        const timer = setTimeout(() => {
+            window.scrollTo(0, 0);
+        }, 100);
+        return () => clearTimeout(timer);
+    }, []);
+
     const handleEntryComplete = () => {
         setShowEntry(false);
         // Small delay before showing main content
         setTimeout(() => {
             setShowMain(true);
+            // Ensure we scroll to top when main content appears
+            setTimeout(() => {
+                window.scrollTo(0, 0);
+            }, 100);
         }, 600);
     };
 

@@ -38,11 +38,21 @@ export default function FloatingNav() {
 
             if (currentSection) {
                 setActiveSection(currentSection);
+            } else {
+                // If no section is active, default to home
+                setActiveSection('home');
             }
         };
 
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
+        // Delay the scroll handler to allow initial scroll to top and content to render
+        const timer = setTimeout(() => {
+            window.addEventListener('scroll', handleScroll);
+        }, 1500);
+
+        return () => {
+            clearTimeout(timer);
+            window.removeEventListener('scroll', handleScroll);
+        };
     }, []);
 
     const scrollToSection = (href: string) => {

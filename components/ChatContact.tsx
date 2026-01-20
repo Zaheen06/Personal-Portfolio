@@ -15,7 +15,7 @@ export default function ChatContact() {
     const [isTyping, setIsTyping] = useState(false);
     const [formData, setFormData] = useState({ name: '', email: '', message: '' });
     const [step, setStep] = useState(0);
-    const chatEndRef = useRef<HTMLDivElement>(null);
+    const messagesContainerRef = useRef<HTMLDivElement>(null);
 
     const { ref, inView } = useInView({
         triggerOnce: true,
@@ -23,7 +23,12 @@ export default function ChatContact() {
     });
 
     const scrollToBottom = () => {
-        chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        if (messagesContainerRef.current) {
+            messagesContainerRef.current.scrollTo({
+                top: messagesContainerRef.current.scrollHeight,
+                behavior: 'smooth',
+            });
+        }
     };
 
     useEffect(() => {
@@ -119,7 +124,10 @@ export default function ChatContact() {
                         </div>
 
                         {/* Messages Area */}
-                        <div className="flex-1 overflow-y-auto space-y-4 mb-6 pr-2 scrollbar-thin scrollbar-thumb-white/10 hover:scrollbar-thumb-white/20">
+                        <div
+                            ref={messagesContainerRef}
+                            className="flex-1 overflow-y-auto space-y-4 mb-6 pr-2 scrollbar-thin scrollbar-thumb-white/10 hover:scrollbar-thumb-white/20"
+                        >
                             {messages.map((msg, idx) => (
                                 <motion.div
                                     key={idx}
@@ -153,7 +161,7 @@ export default function ChatContact() {
                                     </div>
                                 </motion.div>
                             )}
-                            <div ref={chatEndRef} />
+
                         </div>
 
                         {/* Quick Replies for Step 2 */}
