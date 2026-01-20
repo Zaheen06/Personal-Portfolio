@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { projects } from '@/data/portfolio';
-import { ExternalLink, Github, X, ArrowRight } from 'lucide-react';
+import Image from 'next/image';
+import { ExternalLink, Github, X, ArrowRight, TrendingUp, Zap, MapPin, FileText, Layout } from 'lucide-react';
 import { fadeIn, fadeInUp, staggerContainer } from '@/lib/animations';
 
 export default function ProjectExperience() {
@@ -54,36 +55,79 @@ export default function ProjectExperience() {
                                     boxShadow: `0 10px 40px ${project.color}20`,
                                 }}
                             >
-                                {/* Project preview with Abstract Identity Watermark */}
+                                {/* Project preview with CSS Browser Mockup */}
                                 <div
-                                    className="w-full h-48 rounded-xl mb-6 overflow-hidden relative group-hover:scale-[1.02] transition-transform duration-500"
+                                    className="w-full h-64 rounded-xl mb-6 overflow-hidden relative group-hover:scale-[1.02] transition-transform duration-500 bg-bg-secondary"
                                 >
-                                    {/* Animated Gradient Background */}
+                                    {/* Abstract Gradient Background */}
                                     <div
-                                        className="absolute inset-0 w-[200%] h-[200%] animate-gradient-move"
+                                        className="absolute inset-0 w-[200%] h-[200%] animate-gradient-move opacity-50"
                                         style={{
                                             background: `linear-gradient(45deg, ${project.color}10, ${project.color}30, ${project.color}10)`,
                                             backgroundSize: '200% 200%',
                                         }}
                                     />
 
-                                    {/* Abstract Identity: Giant Watermark Letter */}
-                                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-                                        <span
-                                            className="text-[12rem] font-bold opacity-10 mix-blend-overlay filter blur-sm select-none transform group-hover:scale-110 group-hover:rotate-12 transition-transform duration-700"
-                                            style={{ color: project.color }}
-                                        >
-                                            {project.title.charAt(0)}
-                                        </span>
+                                    {/* CSS Browser Window Mockup */}
+                                    <div className="absolute inset-3 bg-bg-primary rounded-lg shadow-2xl overflow-hidden border border-white/5 flex flex-col">
+                                        {/* Browser Toolbar */}
+                                        <div className="h-6 bg-white/5 border-b border-white/5 flex items-center px-3 gap-1.5">
+                                            <div className="w-2 h-2 rounded-full bg-red-400/80"></div>
+                                            <div className="w-2 h-2 rounded-full bg-yellow-400/80"></div>
+                                            <div className="w-2 h-2 rounded-full bg-green-400/80"></div>
+                                            {/* Fake URL Bar */}
+                                            <div className="ml-2 flex-1 h-3 bg-white/5 rounded-full" />
+                                        </div>
+                                        {/* Browser Content */}
+                                        <div className="flex-1 relative overflow-hidden bg-bg-primary group-hover:bg-bg-secondary transition-colors duration-500">
+                                            <div className="p-3 space-y-2">
+                                                {/* Header */}
+                                                <div className="flex gap-2">
+                                                    <div className="w-8 h-8 rounded-lg bg-white/10 shrink-0" />
+                                                    <div className="space-y-1 flex-1">
+                                                        <div className="h-2 w-20 bg-white/10 rounded" />
+                                                        <div className="h-2 w-12 bg-white/5 rounded" />
+                                                    </div>
+                                                </div>
+                                                {/* Body Graph / Content - Only show if no image */}
+                                                <div className="h-20 bg-white/5 rounded-lg w-full relative overflow-hidden flex items-end justify-between px-2 pb-2 gap-1">
+                                                    <div className="w-2 bg-accent-primary/40 h-[40%] rounded-t-sm" style={{ backgroundColor: project.color, opacity: 0.4 }} />
+                                                    <div className="w-2 bg-accent-primary/60 h-[70%] rounded-t-sm" style={{ backgroundColor: project.color, opacity: 0.6 }} />
+                                                    <div className="w-2 bg-accent-primary/80 h-[50%] rounded-t-sm" style={{ backgroundColor: project.color, opacity: 0.8 }} />
+                                                    <div className="w-2 bg-accent-primary h-[90%] rounded-t-sm" style={{ backgroundColor: project.color }} />
+                                                </div>
+                                            </div>
+
+                                            {/* Real Project Image Overlay */}
+                                            {project.imageUrl && (
+                                                <div className="absolute inset-0 z-10 bg-bg-primary">
+                                                    <Image
+                                                        src={project.imageUrl}
+                                                        alt={project.title}
+                                                        fill
+                                                        className="object-cover object-top hover:object-[center_top] transition-all duration-1000"
+                                                    />
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
 
                                     {/* Noise Overlay */}
-                                    <div className="absolute inset-0 bg-noise opacity-30 mix-blend-overlay" />
+                                    <div className="absolute inset-0 bg-noise opacity-30 mix-blend-overlay pointer-events-none" />
+
+                                    {/* Unique Identity Badge */}
+                                    <div className="absolute bottom-6 right-6 font-display font-bold text-6xl opacity-10 pointer-events-none" style={{ color: project.color }}>
+                                        {project.title.charAt(0)}
+                                    </div>
 
                                     {/* Outcome Label (Top Right) */}
                                     <div className="absolute top-4 right-4 translate-y-[-10px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
                                         <span className="px-3 py-1 text-xs font-bold uppercase tracking-wider bg-white/10 backdrop-blur-md rounded-full border border-white/10 text-white shadow-lg">
-                                            {project.impact.includes('users') ? 'User Growth' : project.impact.includes('collaboration') ? 'Realtime' : 'Product'}
+                                            {project.title.includes('Expense') ? 'FinTech' :
+                                                project.title.includes('Quiz') ? 'EdTech' :
+                                                    project.title.includes('Roadside') ? 'Realtime' :
+                                                        project.title.includes('Resume') ? 'Productivity' :
+                                                            'Client Work'}
                                         </span>
                                     </div>
                                 </div>
@@ -113,10 +157,20 @@ export default function ProjectExperience() {
                                     )}
                                 </div>
 
-                                {/* Impact Line */}
+                                {/* Impact Line with Icon */}
                                 <div className="mt-auto pt-4 border-t border-white/5 mb-4">
                                     <p className="text-sm font-medium text-accent-primary/90 flex items-center gap-2">
-                                        <span className="w-1.5 h-1.5 rounded-full bg-accent-primary animate-pulse"></span>
+                                        {project.impact.toLowerCase().includes('insight') || project.impact.toLowerCase().includes('trend') ? (
+                                            <TrendingUp className="w-4 h-4" />
+                                        ) : project.impact.toLowerCase().includes('instant') || project.impact.toLowerCase().includes('automated') ? (
+                                            <Zap className="w-4 h-4" />
+                                        ) : project.impact.toLowerCase().includes('location') ? (
+                                            <MapPin className="w-4 h-4" />
+                                        ) : project.impact.toLowerCase().includes('resume') || project.impact.toLowerCase().includes('ats') ? (
+                                            <FileText className="w-4 h-4" />
+                                        ) : (
+                                            <Layout className="w-4 h-4" />
+                                        )}
                                         {project.impact.split(' ').slice(0, 6).join(' ')}...
                                     </p>
                                 </div>

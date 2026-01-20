@@ -86,7 +86,10 @@ export default function ChatContact() {
                                 </div>
                                 <div>
                                     <div className="font-semibold">{personalInfo.name}</div>
-                                    <div className="text-sm text-text-secondary">Usually replies instantly</div>
+                                    <div className="text-sm text-text-secondary flex items-center gap-1.5">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                                        Usually replies within 24 hours
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -233,8 +236,8 @@ export default function ChatContact() {
                                         rel="noopener noreferrer"
                                         className="flex items-center gap-3 p-4 glass rounded-xl hover:bg-white/10 transition-all group"
                                     >
-                                        <Linkedin className="w-5 h-5 text-text-secondary group-hover:text-accent-neon transition-colors" />
-                                        <span className="group-hover:text-accent-neon transition-colors">LinkedIn</span>
+                                        <Linkedin className="w-5 h-5 text-text-secondary group-hover:text-[#0077b5] transition-colors" />
+                                        <span className="group-hover:text-[#0077b5] transition-colors">LinkedIn</span>
                                     </a>
                                 )}
 
@@ -245,8 +248,8 @@ export default function ChatContact() {
                                         rel="noopener noreferrer"
                                         className="flex items-center gap-3 p-4 glass rounded-xl hover:bg-white/10 transition-all group"
                                     >
-                                        <Twitter className="w-5 h-5 text-text-secondary group-hover:text-accent-neon transition-colors" />
-                                        <span className="group-hover:text-accent-neon transition-colors">Twitter</span>
+                                        <Twitter className="w-5 h-5 text-text-secondary group-hover:text-[#1DA1F2] transition-colors" />
+                                        <span className="group-hover:text-[#1DA1F2] transition-colors">Twitter</span>
                                     </a>
                                 )}
                             </div>

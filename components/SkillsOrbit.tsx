@@ -13,6 +13,9 @@ export default function SkillsOrbit() {
         threshold: 0.1,
     });
 
+    // Add proficiency check for Type safety if needed, assuming data is updated
+    const getProficiency = (skill: any) => skill.proficiency || 50;
+
     // Group skills into the 4 requested categories
     const skillGroups = {
         Frontend: skills.filter(s => ['Frontend', 'Styling', 'Animation'].includes(s.category)),
@@ -110,17 +113,34 @@ export default function SkillsOrbit() {
                                                     >
                                                         {skill.name.charAt(0)}
                                                     </div>
-                                                    <div>
-                                                        <h4 className="font-semibold text-text-primary group-hover:text-accent-primary transition-colors">
+                                                    <div className="flex-1 min-w-0">
+                                                        <h4 className="font-semibold text-text-primary group-hover:text-accent-primary transition-colors truncate">
                                                             {skill.name}
                                                         </h4>
-                                                        {/* Skill Context on Hover */}
-                                                        <p className="text-xs text-text-muted group-hover:opacity-0 transition-opacity duration-200 absolute">
-                                                            {skill.category}
-                                                        </p>
-                                                        <p className="text-xs text-accent-success opacity-0 group-hover:opacity-100 transition-opacity duration-200 mt-1 truncate max-w-[150px]">
-                                                            {(skill as any).usage ? (skill as any).usage.split(' ').slice(0, 4).join(' ') + '...' : 'Real-world production'}
-                                                        </p>
+
+                                                        {/* Skill Context / Proficiency */}
+                                                        <div className="relative h-4 mt-1">
+                                                            {/* Category Label (Default) */}
+                                                            <p className="text-xs text-text-muted group-hover:opacity-0 transition-opacity duration-300 absolute inset-0">
+                                                                {skill.category}
+                                                            </p>
+
+                                                            {/* Usage/Context (Hover) */}
+                                                            <p className="text-xs text-accent-success opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute inset-0 truncate">
+                                                                {(skill as any).usage ? (skill as any).usage.split(' ').slice(0, 4).join(' ') + '...' : 'Production Ready'}
+                                                            </p>
+                                                        </div>
+
+                                                        {/* Proficiency Bar */}
+                                                        <div className="w-full h-1 bg-white/10 rounded-full mt-2 overflow-hidden">
+                                                            <motion.div
+                                                                className="h-full rounded-full"
+                                                                style={{ backgroundColor: skill.color }}
+                                                                initial={{ width: 0 }}
+                                                                animate={{ width: `${getProficiency(skill)}%` }}
+                                                                transition={{ duration: 1, delay: 0.5 }}
+                                                            />
+                                                        </div>
                                                     </div>
                                                 </div>
 
