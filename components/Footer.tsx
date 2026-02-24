@@ -87,9 +87,8 @@ export default function Footer() {
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="pt-8 border-t border-white/5 flex justify-center items-center text-sm text-text-muted">
+                <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-text-muted">
                     <p>© {currentYear} {personalInfo.name}. All rights reserved.</p>
-
                 </div>
             </div>
         </footer>

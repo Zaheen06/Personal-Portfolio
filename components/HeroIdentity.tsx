@@ -1,15 +1,13 @@
 'use client';
 
 import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
-import { useMousePosition } from '@/hooks/useMousePosition';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { personalInfo } from '@/data/portfolio';
 import { fadeIn, fadeInUp, staggerContainer } from '@/lib/animations';
 import Image from 'next/image';
-import { ArrowRight, Download, Sparkles } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
 
 export default function HeroIdentity() {
-    const mouse = useMousePosition();
     const heroRef = useRef<HTMLDivElement>(null);
     const [displayedTitle, setDisplayedTitle] = useState('');
     const fullTitle = personalInfo.title;
@@ -24,30 +22,40 @@ export default function HeroIdentity() {
             } else {
                 clearInterval(interval);
             }
-        }, 50); // Speed of typing
+        }, 50);
 
         return () => clearInterval(interval);
     }, [fullTitle]);
 
-    // Calculate parallax offset based on mouse position
-    const centerX = typeof window !== 'undefined' ? window.innerWidth / 2 : 0;
-    const centerY = typeof window !== 'undefined' ? window.innerHeight / 2 : 0;
+    // Parallax - use motion values directly instead of state-driven re-renders
+    const mouseX = useMotionValue(0);
+    const mouseY = useMotionValue(0);
 
-    const offsetX = useSpring(useTransform(useMotionValue(mouse.x), [0, centerX * 2], [-20, 20]), {
-        damping: 20,
-        stiffness: 100,
-    });
+    const springX = useSpring(mouseX, { damping: 25, stiffness: 120 });
+    const springY = useSpring(mouseY, { damping: 25, stiffness: 120 });
 
-    const offsetY = useSpring(useTransform(useMotionValue(mouse.y), [0, centerY * 2], [-20, 20]), {
-        damping: 20,
-        stiffness: 100,
-    });
+    const rotateX = useTransform(springY, [-20, 20], [5, -5]);
+    const rotateY = useTransform(springX, [-20, 20], [-5, 5]);
 
-    // Update motion values when mouse moves
+    // Throttled mouse handler - only update motion values, no state
     useEffect(() => {
-        offsetX.set((mouse.x - centerX) / 50);
-        offsetY.set((mouse.y - centerY) / 50);
-    }, [mouse, centerX, centerY, offsetX, offsetY]);
+        let rafId: number;
+        const handleMouseMove = (e: MouseEvent) => {
+            cancelAnimationFrame(rafId);
+            rafId = requestAnimationFrame(() => {
+                const centerX = window.innerWidth / 2;
+                const centerY = window.innerHeight / 2;
+                mouseX.set((e.clientX - centerX) / 50);
+                mouseY.set((e.clientY - centerY) / 50);
+            });
+        };
+
+        window.addEventListener('mousemove', handleMouseMove, { passive: true });
+        return () => {
+            cancelAnimationFrame(rafId);
+            window.removeEventListener('mousemove', handleMouseMove);
+        };
+    }, [mouseX, mouseY]);
 
     return (
         <section
@@ -58,7 +66,7 @@ export default function HeroIdentity() {
             {/* Enhanced ambient background elements */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <motion.div
-                    className="absolute top-1/4 -left-1/4 w-[600px] h-[600px] bg-accent-primary/20 rounded-full blur-3xl opacity-20"
+                    className="absolute top-1/4 -left-1/4 w-[600px] h-[600px] bg-accent-primary/20 rounded-full blur-3xl opacity-20 will-change-transform"
                     animate={{
                         scale: [1, 1.15, 1],
                         opacity: [0.1, 0.25, 0.1],
@@ -66,7 +74,7 @@ export default function HeroIdentity() {
                     transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
                 />
                 <motion.div
-                    className="absolute bottom-1/4 -right-1/4 w-[600px] h-[600px] bg-accent-secondary/20 rounded-full blur-3xl opacity-20"
+                    className="absolute bottom-1/4 -right-1/4 w-[600px] h-[600px] bg-accent-secondary/20 rounded-full blur-3xl opacity-20 will-change-transform"
                     animate={{
                         scale: [1.15, 1, 1.15],
                         opacity: [0.1, 0.25, 0.1],
@@ -76,14 +84,14 @@ export default function HeroIdentity() {
 
                 {/* Floating code snippets decoration */}
                 <motion.div
-                    className="absolute top-32 right-32 text-accent-primary/20 font-mono text-sm hidden lg:block"
+                    className="absolute top-32 right-32 text-accent-primary/20 font-mono text-sm hidden lg:block will-change-transform"
                     animate={{ y: [0, -10, 0], opacity: [0.1, 0.2, 0.1], rotate: [0, 3, 0] }}
                     transition={{ duration: 10, repeat: Infinity }}
                 >
                     const developer = &#123; creative: true &#125;;
                 </motion.div>
                 <motion.div
-                    className="absolute bottom-40 left-20 text-accent-secondary/20 font-mono text-sm hidden lg:block"
+                    className="absolute bottom-40 left-20 text-accent-secondary/20 font-mono text-sm hidden lg:block will-change-transform"
                     animate={{ y: [0, 10, 0], opacity: [0.1, 0.2, 0.1], rotate: [0, -3, 0] }}
                     transition={{ duration: 12, repeat: Infinity }}
                 >
@@ -156,9 +164,7 @@ export default function HeroIdentity() {
                             {personalInfo.bio}
                         </motion.p>
 
-
-
-                        {/* CTA Buttons - Improved hierarchy */}
+                        {/* CTA Buttons */}
                         <motion.div variants={fadeInUp} className="flex flex-wrap gap-4 justify-center md:justify-start">
                             <motion.a
                                 href="#projects"
@@ -170,7 +176,6 @@ export default function HeroIdentity() {
                                     View Projects
                                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                 </span>
-                                {/* Button shine effect */}
                                 <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12" />
                             </motion.a>
 
@@ -182,23 +187,22 @@ export default function HeroIdentity() {
                             >
                                 Get in Touch
                             </motion.a>
-
-
                         </motion.div>
                     </motion.div>
 
                     {/* Hero Image with Parallax Effect */}
                     <motion.div
                         variants={fadeIn}
-                        className="relative order-1 md:order-2 flex justify-center perspective-1000"
+                        className="relative order-1 md:order-2 flex justify-center"
+                        style={{ perspective: 1000 }}
                     >
                         <motion.div
-                            className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96"
-                            style={{ x: offsetX, y: offsetY, rotateX: useTransform(offsetY, [-20, 20], [5, -5]), rotateY: useTransform(offsetX, [-20, 20], [-5, 5]) }}
+                            className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 will-change-transform"
+                            style={{ x: springX, y: springY, rotateX, rotateY }}
                         >
-                            {/* Detailed Glow effects */}
+                            {/* Glow effects */}
                             <motion.div
-                                className="absolute inset-0 bg-gradient-to-br from-accent-primary/40 to-accent-secondary/40 rounded-full blur-3xl opacity-40 mix-blend-screen"
+                                className="absolute inset-0 bg-gradient-to-br from-accent-primary/40 to-accent-secondary/40 rounded-full blur-3xl opacity-40 mix-blend-screen will-change-transform"
                                 animate={{
                                     scale: [1, 1.15, 1],
                                     opacity: [0.4, 0.6, 0.4],
@@ -208,7 +212,7 @@ export default function HeroIdentity() {
 
                             {/* Glass frame with Breathing Animation */}
                             <motion.div
-                                className="relative w-full h-full rounded-full glass p-3 border border-white/10"
+                                className="relative w-full h-full rounded-full glass p-3 border border-white/10 will-change-transform"
                                 animate={{
                                     y: [0, -10, 0]
                                 }}
@@ -227,7 +231,6 @@ export default function HeroIdentity() {
                                         className="object-cover transition-transform duration-700 group-hover:scale-105"
                                         priority
                                     />
-                                    {/* Vignette & Gradient overlay */}
                                     <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/80 via-transparent to-transparent pointer-events-none opacity-60" />
                                     <div className="absolute inset-0 shadow-[inset_0_0_40px_rgba(0,0,0,0.5)] rounded-full pointer-events-none" />
                                 </div>

@@ -1,7 +1,7 @@
 'use client';
 
-import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { motion, useScroll, useSpring } from 'framer-motion';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Home, Zap, Briefcase, Mail } from 'lucide-react';
 
 const navItems = [
@@ -14,6 +14,7 @@ const navItems = [
 export default function FloatingNav() {
     const [activeSection, setActiveSection] = useState('home');
     const { scrollYProgress } = useScroll();
+    const ticking = useRef(false);
 
     // Smooth progress bar
     const scaleX = useSpring(scrollYProgress, {
@@ -24,29 +25,32 @@ export default function FloatingNav() {
 
     useEffect(() => {
         const handleScroll = () => {
-            const sections = navItems.map(item => item.href.slice(1));
-            const currentSection = sections.find(section => {
-                const element = document.getElementById(section);
-                if (element) {
-                    const rect = element.getBoundingClientRect();
-                    // Ideally we want to highlight the section that takes up most of the viewport
-                    // or the one currently at the top
-                    return rect.top <= 200 && rect.bottom >= 200;
-                }
-                return false;
-            });
+            if (ticking.current) return;
+            ticking.current = true;
 
-            if (currentSection) {
-                setActiveSection(currentSection);
-            } else {
-                // If no section is active, default to home
-                setActiveSection('home');
-            }
+            requestAnimationFrame(() => {
+                const sections = navItems.map(item => item.href.slice(1));
+                const currentSection = sections.find(section => {
+                    const element = document.getElementById(section);
+                    if (element) {
+                        const rect = element.getBoundingClientRect();
+                        return rect.top <= 200 && rect.bottom >= 200;
+                    }
+                    return false;
+                });
+
+                if (currentSection) {
+                    setActiveSection(currentSection);
+                } else {
+                    setActiveSection('home');
+                }
+                ticking.current = false;
+            });
         };
 
-        // Delay the scroll handler to allow initial scroll to top and content to render
+        // Delay to allow initial scroll to top and content to render
         const timer = setTimeout(() => {
-            window.addEventListener('scroll', handleScroll);
+            window.addEventListener('scroll', handleScroll, { passive: true });
         }, 1500);
 
         return () => {
@@ -55,12 +59,12 @@ export default function FloatingNav() {
         };
     }, []);
 
-    const scrollToSection = (href: string) => {
+    const scrollToSection = useCallback((href: string) => {
         const element = document.getElementById(href.slice(1));
         if (element) {
             element.scrollIntoView({ behavior: 'smooth' });
         }
-    };
+    }, []);
 
     return (
         <motion.nav
@@ -89,7 +93,6 @@ export default function FloatingNav() {
                                         className="absolute inset-0 bg-gradient-to-r from-accent-primary/10 to-accent-secondary/10 rounded-full border border-white/10 shadow-[inset_0_0_8px_rgba(255,255,255,0.05)]"
                                         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                                     >
-                                        {/* Glow effect for active tab */}
                                         <div className="absolute inset-0 rounded-full bg-accent-primary/5 blur-md" />
                                     </motion.div>
                                 )}
@@ -106,10 +109,10 @@ export default function FloatingNav() {
                     })}
                 </motion.div>
 
-                {/* Progress Bar Container - Attached to bottom of nav */}
+                {/* Progress Bar */}
                 <div className="absolute -bottom-1 left-4 right-4 h-[2px] rounded-full overflow-hidden bg-white/5 backdrop-blur-sm -z-10 opacity-0 md:opacity-100 transition-opacity">
                     <motion.div
-                        className="h-full bg-gradient-to-r from-accent-primary via-accent-secondary to-accent-primary"
+                        className="h-full bg-gradient-to-r from-accent-primary via-accent-secondary to-accent-primary will-change-transform"
                         style={{ scaleX, transformOrigin: "0%" }}
                     />
                 </div>

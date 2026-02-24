@@ -9,7 +9,7 @@ import { fadeIn, fadeInUp, staggerContainer } from '@/lib/animations';
 
 export default function ChatContact() {
     const [messages, setMessages] = useState([
-        { type: 'bot', text: `Hi! I'm ${personalInfo.name}.` },
+        { type: 'bot', text: `Hi there! 👋 I'm ${personalInfo.name}.` },
     ]);
     const [inputValue, setInputValue] = useState('');
     const [isTyping, setIsTyping] = useState(false);
@@ -41,7 +41,7 @@ export default function ChatContact() {
             setIsTyping(true);
             setTimeout(() => {
                 setIsTyping(false);
-                setMessages(prev => [...prev, { type: 'bot', text: 'I help businesses build high-performance web apps. Tell me about your project!' }]);
+                setMessages(prev => [...prev, { type: 'bot', text: "I'm a Full Stack Developer specializing in high-performance web apps. To get started, what's your name?" }]);
             }, 1500);
         }
     }, [messages.length]);
@@ -60,19 +60,21 @@ export default function ChatContact() {
             setIsTyping(false);
             if (step === 0) {
                 setFormData({ ...formData, name: text });
-                setMessages(prev => [...prev, { type: 'bot', text: `Nice to meet you, ${text}! What's your email address so I can get back to you?` }]);
+                const userName = text.split(' ')[0];
+                const capitalizedName = userName.charAt(0).toUpperCase() + userName.slice(1);
+                setMessages(prev => [...prev, { type: 'bot', text: `Awesome to meet you, ${capitalizedName}! ✨ What's the best email address to reach you at?` }]);
                 setStep(1);
             } else if (step === 1) {
                 setFormData({ ...formData, email: text });
                 setMessages(prev => [...prev, {
-                    type: 'bot', text: 'Perfect. What are you looking to collaborate on?'
+                    type: 'bot', text: 'Got it! Thanks! 🎯 Now, what would you like to discuss or collaborate on?'
                 }]);
                 setStep(2);
             } else if (step === 2) {
                 setFormData({ ...formData, message: text });
                 setMessages(prev => [
                     ...prev,
-                    { type: 'bot', text: `Thanks! I've received your message about "${text}". I'll review it and email you at ${formData.email} within 24 hours! 🚀` },
+                    { type: 'bot', text: `Thanks for reaching out! 🙌 I've received your message about "${text}". I'll make sure to review it and email you at ${formData.email} within 24 hours! 🚀` },
                 ]);
                 setStep(3);
                 // Here you would normally send the form data to your backend/email service
@@ -193,14 +195,13 @@ export default function ChatContact() {
                                     onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                                     placeholder={
                                         step === 0
-                                            ? 'Your name...'
+                                            ? 'Type your name...'
                                             : step === 1
-                                                ? 'Your email address...'
+                                                ? 'Type your email address...'
                                                 : 'Type your message...'
                                     }
                                     className="flex-1 px-6 py-3 bg-transparent border-none focus:ring-0 text-text-primary placeholder:text-text-secondary/50"
                                     disabled={isTyping}
-                                    autoFocus
                                 />
                                 <button
                                     onClick={() => handleSendMessage()}

@@ -77,20 +77,9 @@ body::after {
   pointer-events: none;
 }
 
-/* Noise Overlay */
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-image: var(--noise-pattern);
-  pointer-events: none;
-  z-index: 40;
-  opacity: 0.05;
-  mix-blend-mode: overlay;
-}
+/* Noise Overlay - disabled for performance */
+/* The SVG noise with mix-blend-mode overlay was causing
+   the GPU to recomposite the entire viewport every frame */
 
 .bg-noise {
   background-image: var(--noise-pattern);
@@ -117,23 +106,17 @@ body::before {
   background: #475569;
 }
 
-/* Glassmorphism utility */
+/* Glassmorphism utility - uses opaque backgrounds for performance */
+/* backdrop-filter: blur() forces recomposite on scroll */
 .glass {
-  background: rgba(30, 41, 59, 0.4);
-  /* More transparent */
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(30, 41, 59, 0.85);
   border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .glass-dark {
-  background: rgba(15, 23, 42, 0.6);
-  /* Deeper, richer dark glass */
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(15, 23, 42, 0.92);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  /* Specular highlight border */
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
 }
 

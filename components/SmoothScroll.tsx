@@ -7,6 +7,5 @@ interface SmoothScrollProps {
 }
 
 export default function SmoothScroll({ children }: SmoothScrollProps) {
-    // Using native CSS smooth scrolling instead of Lenis for better performance
-    return <div className="scroll-smooth">{children}</div>;
+    return <>{children}</>;
 }

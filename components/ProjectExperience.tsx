@@ -6,6 +6,7 @@ import { projects } from '@/data/portfolio';
 import Image from 'next/image';
 import { ArrowRight, TrendingUp, Zap, MapPin, FileText, Layout, ArrowUpRight } from 'lucide-react';
 import { fadeIn, fadeInUp, staggerContainer } from '@/lib/animations';
+import { useCallback } from 'react';
 
 interface ProjectCardProps {
     project: typeof projects[0];
@@ -19,27 +20,33 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
     const mouseX = useSpring(x, { stiffness: 500, damping: 100 });
     const mouseY = useSpring(y, { stiffness: 500, damping: 100 });
 
-    function handleMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
+    const rotateX = useTransform(mouseY, [-0.5, 0.5], [5, -5]);
+    const rotateY = useTransform(mouseX, [-0.5, 0.5], [-5, 5]);
+
+    // Pre-compute background transforms outside render
+    const shineBackground = useTransform(
+        [mouseX, mouseY],
+        ([xVal, yVal]: number[]) =>
+            `radial-gradient(circle at ${50 + (xVal as number) * 100}% ${50 + (yVal as number) * 100}%, rgba(255,255,255,0.1), transparent 50%)`
+    );
+
+    const handleMouseMove = useCallback(({ currentTarget, clientX, clientY }: React.MouseEvent) => {
         const { left, top, width, height } = currentTarget.getBoundingClientRect();
         const xPct = (clientX - left) / width - 0.5;
         const yPct = (clientY - top) / height - 0.5;
         x.set(xPct);
         y.set(yPct);
-    }
+    }, [x, y]);
 
-    function handleMouseLeave() {
+    const handleMouseLeave = useCallback(() => {
         x.set(0);
         y.set(0);
-    }
-
-    const rotateX = useTransform(mouseY, [-0.5, 0.5], [5, -5]);
-    const rotateY = useTransform(mouseX, [-0.5, 0.5], [-5, 5]);
-    const brightness = useTransform(mouseY, [-0.5, 0.5], [1.1, 0.9]);
+    }, [x, y]);
 
     return (
         <motion.div
             variants={fadeInUp}
-            className="group relative flex flex-col h-full perspective-1000"
+            className="group relative flex flex-col h-full"
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
         >
@@ -47,32 +54,20 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
                 style={{
                     rotateX,
                     rotateY,
-                    filter: useTransform(brightness, (b) => `brightness(${b})`),
                     transformStyle: "preserve-3d",
                 }}
-                className="relative glass-dark rounded-2xl overflow-hidden border border-white/5 group-hover:border-white/10 transition-colors duration-500 h-full flex flex-col shadow-xl"
+                className="relative glass-dark rounded-2xl overflow-hidden border border-white/5 group-hover:border-white/10 transition-colors duration-500 h-full flex flex-col shadow-xl will-change-transform"
             >
                 {/* Shine Effect */}
                 <motion.div
                     className="absolute inset-0 z-20 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-500"
                     style={{
-                        background: useTransform(
-                            mouseX,
-                            [-0.5, 0.5],
-                            [
-                                "linear-gradient(to right, transparent 0%, rgba(255,255,255,0) 100%)",
-                                "linear-gradient(to right, transparent 0%, rgba(255,255,255,0.1) 100%)"
-                            ] // Simplified shine for performance, or use a radial gradient tracking mouse
-                        ),
-                        backgroundImage: useTransform(
-                            [mouseX, mouseY],
-                            ([xVal, yVal]: number[]) => `radial-gradient(circle at ${50 + xVal * 100}% ${50 + yVal * 100}%, rgba(255,255,255,0.1), transparent 50%)`
-                        )
+                        backgroundImage: shineBackground,
                     }}
                 />
 
                 {/* Project Showcase Area */}
-                <div className="relative h-64 w-full overflow-hidden bg-bg-secondary transform-style-3d">
+                <div className="relative h-64 w-full overflow-hidden bg-bg-secondary">
                     {/* Background Gradient */}
                     <div
                         className="absolute inset-0 opacity-20 transition-opacity duration-500 group-hover:opacity-30"
@@ -118,8 +113,8 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
                         </div>
                     </div>
 
-                    {/* Category Categories Badge */}
-                    <div className="absolute top-4 right-4 z-10 transform translate-z-10">
+                    {/* Category Badge */}
+                    <div className="absolute top-4 right-4 z-10">
                         <span className="px-3 py-1 text-xs font-bold uppercase tracking-wider bg-black/40 backdrop-blur-md rounded-full border border-white/10 text-white shadow-lg flex items-center gap-1">
                             {project.title.includes('Expense') ? 'FinTech' :
                                 project.title.includes('Quiz') ? 'EduTech' :
@@ -131,7 +126,7 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
                 </div>
 
                 {/* Content Body */}
-                <div className="p-6 flex-1 flex flex-col transform-style-3d">
+                <div className="p-6 flex-1 flex flex-col">
                     <div className="flex justify-between items-start mb-3">
                         <h3 className="text-2xl font-display font-bold text-text-primary group-hover:gradient-text transition-all duration-300">
                             {project.title}

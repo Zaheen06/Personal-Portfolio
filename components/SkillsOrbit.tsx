@@ -123,9 +123,9 @@ export default function SkillsOrbit() {
             <div className="max-w-7xl mx-auto px-6 relative z-10">
                 {/* Orbiting Background Elements */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-white/5 rounded-full animate-[spin_60s_linear_infinite]" />
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] border border-white/5 rounded-full animate-[spin_80s_linear_infinite_reverse] opacity-50" />
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[1200px] border border-dashed border-white/5 rounded-full animate-[spin_100s_linear_infinite]" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-white/5 rounded-full animate-[spin_60s_linear_infinite] will-change-transform" style={{ transform: 'translate(-50%, -50%) translateZ(0)' }} />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] border border-white/5 rounded-full animate-[spin_80s_linear_infinite_reverse] opacity-50 will-change-transform" style={{ transform: 'translate(-50%, -50%) translateZ(0)' }} />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[1200px] border border-dashed border-white/5 rounded-full animate-[spin_100s_linear_infinite] will-change-transform" style={{ transform: 'translate(-50%, -50%) translateZ(0)' }} />
                 </div>
 
                 {/* Header */}

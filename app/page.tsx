@@ -9,7 +9,6 @@ import SkillsOrbit from '@/components/SkillsOrbit';
 import ProjectExperience from '@/components/ProjectExperience';
 import ChatContact from '@/components/ChatContact';
 import Footer from '@/components/Footer';
-
 export default function Home() {
     const [showEntry, setShowEntry] = useState(true);
     const [showMain, setShowMain] = useState(false);
