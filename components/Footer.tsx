@@ -15,10 +15,14 @@ export default function Footer() {
     ];
 
     return (
-        <footer className="relative pt-24 pb-12 overflow-hidden border-t border-white/5 bg-bg-secondary">
+        <footer className="relative pt-24 pb-12 overflow-hidden bg-bg-secondary/80 backdrop-blur-sm">
+            {/* Elegant Top Border */}
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[2px] bg-gradient-to-r from-transparent via-accent-primary/30 to-transparent blur-[2px]" />
+
             {/* Background Gradients */}
-            <div className="absolute top-0 left-1/4 w-96 h-96 bg-accent-primary/5 rounded-full blur-[128px] pointer-events-none" />
-            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent-secondary/5 rounded-full blur-[128px] pointer-events-none" />
+            <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-accent-primary/10 rounded-full blur-[128px] pointer-events-none" />
+            <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-accent-secondary/10 rounded-full blur-[128px] pointer-events-none" />
 
             <div className="max-w-7xl mx-auto px-6 relative z-10">
                 <div className="grid md:grid-cols-2 gap-12 mb-20">
